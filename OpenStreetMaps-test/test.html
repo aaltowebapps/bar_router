@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>OpenLayers Demo</title>
+    <style type="text/css">
+      html, body, #basicMap {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+      }
+    </style>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script>
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(success, error);
+} else {
+    error('not supported');
+}
+
+function success(position) {
+    var lon = position.coords.longitude;
+    var lat = position.coords.latitude;
+
+    map = new OpenLayers.Map("basicMap");
+    var mapnik = new OpenLayers.Layer.OSM();
+    var vectors= new OpenLayers.Layer.Vector("Vector layer")
+    map.addLayer(mapnik);
+
+    var center = new OpenLayers.LonLat(lon, lat).transform(
+        new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+        new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
+    );
+    point = new OpenLayers.Geometry.Point(center.lon, center.lat);
+    vectors.addFeatures([ new OpenLayers.Feature.Vector(point)]);
+
+    drag = new OpenLayers.Control.DragFeature(vectors, {
+        autoActivate: true,
+        onComplete: function(event) {console.log(event);alert("x:" + event.geometry.x + "; y: " + event.geometry.y);}
+    });
+    map.addControl(drag);
+    drag.activate();
+
+    map.addLayer(vectors);
+    map.setCenter(center , 15); // Zoom level
+
+}
+
+function error(message) {
+    document.getElementById("#basicMap").innerHTML = message;
+}
+    </script>
+  </head>
+  <body>
+    <div id="basicMap"></div>
+  </body>
+</html>
