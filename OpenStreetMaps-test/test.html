@@ -35,7 +35,17 @@ function success(position) {
 
     drag = new OpenLayers.Control.DragFeature(vectors, {
         autoActivate: true,
-        onComplete: function(event) {console.log(event);alert("x:" + event.geometry.x + "; y: " + event.geometry.y);}
+        onComplete: function(event) {
+            var pos = new OpenLayers.LonLat(event.geometry.x, event.geometry.y).transform(
+                new OpenLayers.Projection("EPSG:900913"), // from Spherical Mercator Projection
+                new OpenLayers.Projection("EPSG:4326") // to WGS 1984
+                );
+            console.log("http://api.reittiopas.fi/hsl/prod/?user=aaltoreittiopas&pass=m33p1qRA&request=reverse_geocode&coordinate=" + pos.lon + "," + pos.lat + "&epsg_out=wgs84&epsg_in=wgs84")
+            
+                
+//            alert("WGS84: " + pos.lon + "," + pos.lat);
+
+        }
     });
     map.addControl(drag);
     drag.activate();
