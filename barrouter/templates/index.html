@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="{% get_static_prefix %}css/cluster.css" />
+        <!--<link rel="shortcut icon" href="{% get_static_prefix %}favicon.ico" />-->
+        <title>Organizational chart with backbone.js example</title>
+        <meta name="description" content="" />
+        {% block head %}
+        {% endblock %}
+    </head>
+    <body>
+        <!--<div id="header"></div>
+
+        <div id="sidebar"></div>-->
+
+        <!--        <div id="content"><ul></ul></div>-->
+        <div id="chart"></div>
+
+<!--        <script src="{% get_static_prefix %}lib/jquery-1.7.1.min.js"></script>
+        <script src="{% get_static_prefix %}lib/underscore-min.js"></script>
+        <script src="{% get_static_prefix %}lib/backbone-min.js"></script>-->
+        <script src="{% get_static_prefix %}lib/d3.v2.min.js"></script>
+
+        <script type="text/javascript">
+            var static_prefix = '{% get_static_prefix %}';
+        </script>
+
+
+        <script src="{% get_static_prefix %}js/cluster.js"></script>
+
+<!--        <script src="{% get_static_prefix %}js/utils.js"></script>
+        <script src="{% get_static_prefix %}js/models/employee.js"></script>
+        <script src="{% get_static_prefix %}js/models/skill.js"></script>
+        <script src="{% get_static_prefix %}js/views/header.js"></script>
+        <script src="{% get_static_prefix %}js/views/winelist.js"></script>
+        <script src="{% get_static_prefix %}js/views/winedetails.js"></script>
+        <script src="{% get_static_prefix %}js/views/employeetree.js"></script>
+        <script src="{% get_static_prefix %}js/main.js"></script> -->
+
+    </body>
+</html> 
