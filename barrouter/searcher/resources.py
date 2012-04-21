@@ -34,6 +34,25 @@ class QueryHandler(BaseHandler):
 
         for key, value in request.GET.iteritems():
             params[key] = value
+
+        if params.get("request") == "route":
+            try:
+                #TODO some kind of caching instead of this
+                from_address = params.pop("from")
+                to_address = params.pop("to")
+                geocode = BASEPARAMS.copy()
+                geocode["request"] = "geocode"
+                geocode["key"] = from_address
+                r = requests.get(REITTIOPAS, params = geocode)
+                j = json.loads(r.content)
+                params["from"] = j[0]["coords"]
+                geocode["key"] = to_address
+                r = requests.get(REITTIOPAS, params = geocode)
+                j = json.loads(r.content)
+                params["to"] = j[0]["coords"]
+            except:
+                return #TODO error
+
         r = requests.get(REITTIOPAS, params=params)
         j = json.loads(r.content)
         return j

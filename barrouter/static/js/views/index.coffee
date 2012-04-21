@@ -7,6 +7,7 @@ window.IndexView = Backbone.View.extend
 
     events:
         "submit": "submit"
+        "change #from": "updateFrom"
 
     render: ->
         $(@el).html @template()
@@ -14,10 +15,14 @@ window.IndexView = Backbone.View.extend
 
         @map = new OpenLayers.Map("basicMap")
         mapnik = new OpenLayers.Layer.OSM()
+        @vectors = new OpenLayers.Layer.Vector("Vector layer")
+        @currentPosition = undefined
 
         @map.addLayer mapnik
+        @map.addLayer @vectors
         
         if navigator.geolocation
+            # awesome closures
             do () =>
                 success = (position) =>
                     @geolocate(position)
@@ -31,7 +36,23 @@ window.IndexView = Backbone.View.extend
 
     submit: (event) ->
         event.preventDefault()
-        alert "moi"
+        route event.target[0].value, event.target[1].value, (data) ->
+            console.log data
+
+        
+    
+    updateFrom: (event) ->
+        locate event.currentTarget.value, (data) =>
+            if data.details.houseNumber
+                $("#from").val "#{data.name} #{data.details.houseNumber}, #{data.city}"
+            else
+                $("#from").val "#{data.name}, #{data.city}"
+            
+            pos = data.coords.split(",")
+            center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
+            @currentLocation.move(center)
+            @map.setCenter center, 15
+
 
 
     geolocate: (position) ->
@@ -42,11 +63,11 @@ window.IndexView = Backbone.View.extend
 
         reverseLocate center.lon, center.lat, (data) ->
             $("#from").val data.name
-        vectors = new OpenLayers.Layer.Vector("Vector layer")
 
-        point = new OpenLayers.Geometry.Point(center.lon, center.lat)
-        vectors.addFeatures [ new OpenLayers.Feature.Vector(point) ]
-        drag = new OpenLayers.Control.DragFeature(vectors,
+        geometryPoint = new OpenLayers.Geometry.Point(center.lon, center.lat)
+        @currentLocation = new OpenLayers.Feature.Vector(geometryPoint)
+        @vectors.addFeatures [ @currentLocation ]
+        drag = new OpenLayers.Control.DragFeature(@vectors,
             autoActivate: true
             onComplete: (event) ->
                 reverseLocate event.geometry.x, event.geometry.y, (data) ->
@@ -54,7 +75,6 @@ window.IndexView = Backbone.View.extend
         )
         @map.addControl drag
         drag.activate()
-        @map.addLayer vectors
         @map.setCenter center, 15
         return undefined
 
@@ -65,6 +85,17 @@ window.IndexView = Backbone.View.extend
                 latititude: 60.183374850576
 
 
+
+locate = (key, callback) ->
+    $.ajax
+        method: "GET"
+        url: "/api/query"
+        data:
+            key: key
+            request: "geocode"
+        success: (data) ->
+            callback(data[0])
+    
 
 reverseLocate = (x, y, callback) ->
     pos = new OpenLayers.LonLat(x, y)
@@ -79,3 +110,15 @@ reverseLocate = (x, y, callback) ->
         success: (data) ->
             console.log "http://api.reittiopas.fi/hsl/prod/?user=aaltoreittiopas&pass=m33p1qRA&request=reverse_geocode&coordinate=" + pos.lon + "," + pos.lat + "&epsg_out=wgs84&epsg_in=wgs84"
             callback(data[0])
+
+
+route = (from, to, callback) ->
+    $.ajax
+        method: "GET"
+        url: "/api/query"
+        data:
+            request: "route"
+            from: from
+            to: to
+        success: (data) ->
+            callback data[0]
