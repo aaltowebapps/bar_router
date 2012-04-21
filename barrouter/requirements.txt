@@ -1,15 +1,4 @@
 pysqlite==1.0.1
-
 Django==1.3
-
 django-piston==0.2.3
-	Ubuntu software center	
-
 requests==0.6.1
-	sudo apt-get install python-pip
-	sudo pip install requests
-
-Coffee Script
-	Highlighting in gedit:	https://github.com/wavded/gedit-coffeescrip
-	Get the thing:		sudo apt-get install coffeescript
-	Compile the code:	coffee -c js/
