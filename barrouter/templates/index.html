@@ -3,41 +3,30 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link rel="stylesheet" href="{% get_static_prefix %}css/cluster.css" />
-        <!--<link rel="shortcut icon" href="{% get_static_prefix %}favicon.ico" />-->
-        <title>Organizational chart with backbone.js example</title>
-        <meta name="description" content="" />
-        {% block head %}
-        {% endblock %}
+        <link rel="stylesheet" href="{% get_static_prefix %}css/style.css" />
+        <link rel="shortcut icon" href="{% get_static_prefix %}favicon.ico" />
+        <meta name="viewport" content="width=device-width, height=device-height">
+        <title>HTML5 Reittiopas</title>
+        <meta name="description" content="Modern reittiopas application for mobile and desktop use. Uses modern browser features like location detection and tries to minimize page loads." />
     </head>
     <body>
-        <!--<div id="header"></div>
-
-        <div id="sidebar"></div>-->
-
-        <!--        <div id="content"><ul></ul></div>-->
-        <div id="chart"></div>
-
-<!--        <script src="{% get_static_prefix %}lib/jquery-1.7.1.min.js"></script>
+        <div id="basicMap"></div>
+        <div id="content"></div>
+        
+        <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+        <script src="{% get_static_prefix %}lib/jquery-1.7.1.min.js"></script>
         <script src="{% get_static_prefix %}lib/underscore-min.js"></script>
-        <script src="{% get_static_prefix %}lib/backbone-min.js"></script>-->
-        <script src="{% get_static_prefix %}lib/d3.v2.min.js"></script>
+        <script src="{% get_static_prefix %}lib/backbone-min.js"></script>
 
         <script type="text/javascript">
             var static_prefix = '{% get_static_prefix %}';
+            var debug = true;
         </script>
 
 
-        <script src="{% get_static_prefix %}js/cluster.js"></script>
-
-<!--        <script src="{% get_static_prefix %}js/utils.js"></script>
-        <script src="{% get_static_prefix %}js/models/employee.js"></script>
-        <script src="{% get_static_prefix %}js/models/skill.js"></script>
-        <script src="{% get_static_prefix %}js/views/header.js"></script>
-        <script src="{% get_static_prefix %}js/views/winelist.js"></script>
-        <script src="{% get_static_prefix %}js/views/winedetails.js"></script>
-        <script src="{% get_static_prefix %}js/views/employeetree.js"></script>
-        <script src="{% get_static_prefix %}js/main.js"></script> -->
-
+        <script src="{% get_static_prefix %}js/utils.js"></script>
+        <script src="{% get_static_prefix %}js/models.js"></script>
+        <script src="{% get_static_prefix %}js/views/index.js"></script>
+        <script src="{% get_static_prefix %}js/main.js"></script>
     </body>
 </html> 

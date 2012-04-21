@@ -16,6 +16,7 @@ from searcher import resources
 query_handler = Resource(resources.QueryHandler)
 
 urlpatterns = patterns('',
+    url('^$', "searcher.views.index"),
     url('^api/query/$', query_handler),
     #url('^$', 'orgmap.views.index'),
 )

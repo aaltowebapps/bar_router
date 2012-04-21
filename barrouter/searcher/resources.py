@@ -30,22 +30,11 @@ class QueryHandler(BaseHandler):
     allowed_methods = ('GET', )
     
     def read(self, request):
-        try:
-            longitude = request.GET["lon"]
-            latitude = request.GET["lat"]
-            to_location  = request.GET["to"]
-        except:
-            return _error(rc.BAD_REQUEST, "invalid parameters")
-
         params = BASEPARAMS.copy()
-        params.update({
-                "request": "reverse_geocode",
-                "coordinate": str(longitude) + "," + str(latitude),
-                })
 
+        for key, value in request.GET.iteritems():
+            params[key] = value
         r = requests.get(REITTIOPAS, params=params)
-        
         j = json.loads(r.content)
         return j
-
 
