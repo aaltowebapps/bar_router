@@ -9,7 +9,7 @@ You need to get pip first.
 
 On ubuntu:
 sudo apt-get install python-setuptools
-suod easy_install pip
+sudo easy_install pip
 
 
 
@@ -17,3 +17,5 @@ Coffee Script
 	Highlighting in gedit:	https://github.com/wavded/gedit-coffeescrip
 	Get the thing:		sudo apt-get install coffeescript
 	Compile the code:	coffee -c js/
+        Watch files for changes
+        and compile:            coffee -w js/
