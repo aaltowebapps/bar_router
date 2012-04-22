@@ -27,3 +27,9 @@ tpl =
   # Get template by name from hash of preloaded templates
   get: (name) ->
     @templates[name]
+
+
+getUrlParam = (name) ->
+    results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href)
+    return undefined unless results
+    return decodeURI(results[1])

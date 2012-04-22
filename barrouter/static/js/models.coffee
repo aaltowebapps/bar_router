@@ -1,20 +1,7 @@
-window.Face = Backbone.Model.extend
-    urlRoot: "/api/faces/"
+window.Route = Backbone.Model.extend
+    urlRoot: "/api/query/"
 
-window.FaceCollection = Backbone.Collection.extend
-    model: Face
-    url: "/api/faces/"
+window.Routes = Backbone.Collection.extend
+    model: Route
+    url: "/api/query/"
 
-window.Feedback = Backbone.Model.extend
-    urlRoot:"/api/feedback/"
-
-window.SearchCollection = Backbone.Collection.extend
-    model: Face
-    url: "/api/search/"
-
-window.Tag = Backbone.Model.extend
-    urlRoot: "/api/tags/"
-
-window.TagCollection = Backbone.Collection.extend
-    model: Tag
-    url: "/api/tags/"

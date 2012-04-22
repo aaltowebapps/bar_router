@@ -14,20 +14,32 @@ AppRouter = Backbone.Router.extend
   initialize: ->
     @wgs84 = new OpenLayers.Projection("EPSG:4326")
     @s_mercator = new OpenLayers.Projection("EPSG:900913")
+    @map = new OpenLayers.Map("basicMap")
+    mapnik = new OpenLayers.Layer.OSM()
+    @vectors = new OpenLayers.Layer.Vector("Vector layer")
+    @map.addLayer mapnik
+    @map.addLayer @vectors
+    @map.addControl new OpenLayers.Control.DrawFeature(@vectors, OpenLayers.Handler.Path)
+
 
   routes:
     "": "index"
+    "route/*splat": "results"
 
   index: ->
     @before =>
       return new IndexView().render()
+
+  results: ->
+    @before =>
+      return new ResultsView().render()
 
   before: (callback) ->
     @currentPage.close() if @currentPage
     @currentPage = callback()
 
 
-tpl.loadTemplates [ "index" ], ->
+tpl.loadTemplates [ "index", "result" ], ->
   routes = AppRouter::routes
   for route, action of routes
       routes[route + "/"] = action

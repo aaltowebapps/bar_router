@@ -1,4 +1,4 @@
-var tpl;
+var getUrlParam, tpl;
 
 tpl = {
   templates: {},
@@ -27,4 +27,11 @@ tpl = {
   get: function(name) {
     return this.templates[name];
   }
+};
+
+getUrlParam = function(name) {
+  var results;
+  results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+  if (!results) return;
+  return decodeURI(results[1]);
 };

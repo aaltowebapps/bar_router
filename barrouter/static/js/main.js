@@ -17,16 +17,30 @@ Backbone.View.prototype.navigateAnchor = function(event) {
 
 AppRouter = Backbone.Router.extend({
   initialize: function() {
+    var mapnik;
     this.wgs84 = new OpenLayers.Projection("EPSG:4326");
-    return this.s_mercator = new OpenLayers.Projection("EPSG:900913");
+    this.s_mercator = new OpenLayers.Projection("EPSG:900913");
+    this.map = new OpenLayers.Map("basicMap");
+    mapnik = new OpenLayers.Layer.OSM();
+    this.vectors = new OpenLayers.Layer.Vector("Vector layer");
+    this.map.addLayer(mapnik);
+    this.map.addLayer(this.vectors);
+    return this.map.addControl(new OpenLayers.Control.DrawFeature(this.vectors, OpenLayers.Handler.Path));
   },
   routes: {
-    "": "index"
+    "": "index",
+    "route/*splat": "results"
   },
   index: function() {
     var _this = this;
     return this.before(function() {
       return new IndexView().render();
+    });
+  },
+  results: function() {
+    var _this = this;
+    return this.before(function() {
+      return new ResultsView().render();
     });
   },
   before: function(callback) {
@@ -35,7 +49,7 @@ AppRouter = Backbone.Router.extend({
   }
 });
 
-tpl.loadTemplates(["index"], function() {
+tpl.loadTemplates(["index", "result"], function() {
   var action, route, routes;
   routes = AppRouter.prototype.routes;
   for (route in routes) {

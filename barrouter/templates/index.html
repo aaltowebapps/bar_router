@@ -10,6 +10,7 @@
         <meta name="description" content="Modern reittiopas application for mobile and desktop use. Uses modern browser features like location detection and tries to minimize page loads." />
     </head>
     <body>
+        <div id="loader"></div><!-- get spinner here -->
         <div id="basicMap"></div>
         <div id="content"></div>
         
@@ -24,9 +25,11 @@
         </script>
 
 
+        <script src="{% get_static_prefix %}js/reittiopas.js"></script>
         <script src="{% get_static_prefix %}js/utils.js"></script>
         <script src="{% get_static_prefix %}js/models.js"></script>
         <script src="{% get_static_prefix %}js/views/index.js"></script>
+        <script src="{% get_static_prefix %}js/views/results.js"></script>
         <script src="{% get_static_prefix %}js/main.js"></script>
     </body>
 </html> 
