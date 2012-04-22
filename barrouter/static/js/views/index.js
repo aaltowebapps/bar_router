@@ -18,9 +18,9 @@ window.IndexView = Backbone.View.extend({
     this.map = new OpenLayers.Map("basicMap");
     mapnik = new OpenLayers.Layer.OSM();
     this.vectors = new OpenLayers.Layer.Vector("Vector layer");
-    this.currentPosition = void 0;
     this.map.addLayer(mapnik);
     this.map.addLayer(this.vectors);
+    this.map.addControl(new OpenLayers.Control.DrawFeature(this.vectors, OpenLayers.Handler.Path));
     if (navigator.geolocation) {
       (function() {
         var fail, success;
@@ -38,9 +38,35 @@ window.IndexView = Backbone.View.extend({
     return this;
   },
   submit: function(event) {
+    var _this = this;
     event.preventDefault();
     return route(event.target[0].value, event.target[1].value, function(data) {
-      return console.log(data);
+      _this.vectors.removeAllFeatures();
+      return _.each(data.legs, function(leg) {
+        var line, points, style;
+        console.log(leg);
+        points = [];
+        _.each(leg.locs, function(point) {
+          var loc;
+          loc = new OpenLayers.LonLat(point.coord.x, point.coord.y).transform(app.wgs84, app.s_mercator);
+          return points.push(new OpenLayers.Geometry.Point(loc.lon, loc.lat));
+        });
+        line = new OpenLayers.Geometry.LineString(points);
+        style = {
+          strokeOpacity: 0.5,
+          strokeWidth: 5
+        };
+        if (["1", "3", "4", "5"].indexOf(leg.type) !== -1) {
+          style["strokeColor"] = "#0000ff";
+        } else if (leg.type === "2") {
+          style["strokeColor"] = "#00ff00";
+        } else if (leg.type === "12") {
+          style["strokeColor"] = "#ff0000";
+        } else if (leg.type === "6") {
+          style["strokeColor"] = "#ff8c00";
+        }
+        return _this.vectors.addFeatures([new OpenLayers.Feature.Vector(line, null, style)]);
+      });
     });
   },
   updateFrom: function(event) {
@@ -132,7 +158,7 @@ route = function(from, to, callback) {
       to: to
     },
     success: function(data) {
-      return callback(data[0]);
+      return callback(data[0][0]);
     }
   });
 };
