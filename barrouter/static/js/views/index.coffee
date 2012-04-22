@@ -32,34 +32,6 @@ window.IndexView = Backbone.View.extend
         to = encodeURI(event.target[1].value)
         app.navigate "/route/?from=#{from}&to=#{to}", true
 
-#        Reittiopas.route event.target[0].value, event.target[1].value, (data) =>
-#            app.vectors.removeAllFeatures()
-#            _.each data.legs, (leg) =>
-#                console.log leg
-#                points = []
-#                _.each leg.locs, (point) ->
-#                    loc = new OpenLayers.LonLat(point.coord.x, point.coord.y)
-#                        .transform(app.wgs84, app.s_mercator)
-#                    points.push new OpenLayers.Geometry.Point(loc.lon, loc.lat)
-#            
-#                line = new OpenLayers.Geometry.LineString(points)
-#
-#                style =
-#                    strokeOpacity: 0.5
-#                    strokeWidth: 5
-#
-#                if ["1","3","4","5"].indexOf(leg.type) != -1 #bus
-#                    style["strokeColor"] = "#0000ff"
-#                else if leg.type == "2" #tram
-#                    style["strokeColor"] = "#00ff00"
-#                else if leg.type == "12" #train
-#                    style["strokeColor"] = "#ff0000"
-#                else if leg.type == "6" #metro
-#                    style["strokeColor"] = "#ff8c00"
-#
-#                app.vectors.addFeatures [new OpenLayers.Feature.Vector(line, null, style)]
-
-    
     updateFrom: (event) ->
         Reittiopas.locate event.currentTarget.value, (data) =>
             if data.details.houseNumber

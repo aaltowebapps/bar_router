@@ -21,6 +21,9 @@ html, body {
   #loader img {
     margin: 3em auto 0; }
 
+a {
+  color: white; }
+
 form {
   text-align: center; }
 
@@ -37,5 +40,6 @@ table {
   width: 100%;
   max-width: 320px;
   background-color: white;
-  color: black;
   border: 1px solid black; }
+  .route a {
+    color: black; }

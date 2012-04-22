@@ -43,13 +43,21 @@ AppRouter = Backbone.Router.extend({
       return new ResultsView().render();
     });
   },
+  resultmap: function(model) {
+    var _this = this;
+    return this.before(function() {
+      return new ResultMapView({
+        model: model
+      }).render();
+    });
+  },
   before: function(callback) {
     if (this.currentPage) this.currentPage.close();
     return this.currentPage = callback();
   }
 });
 
-tpl.loadTemplates(["index", "result"], function() {
+tpl.loadTemplates(["index", "result", "resultMap"], function() {
   var action, route, routes;
   routes = AppRouter.prototype.routes;
   for (route in routes) {

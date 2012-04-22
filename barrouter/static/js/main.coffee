@@ -34,12 +34,16 @@ AppRouter = Backbone.Router.extend
     @before =>
       return new ResultsView().render()
 
+  resultmap: (model) ->
+    @before =>
+      return new ResultMapView(model: model).render()
+
   before: (callback) ->
     @currentPage.close() if @currentPage
     @currentPage = callback()
 
 
-tpl.loadTemplates [ "index", "result" ], ->
+tpl.loadTemplates [ "index", "result", "resultMap" ], ->
   routes = AppRouter::routes
   for route, action of routes
       routes[route + "/"] = action

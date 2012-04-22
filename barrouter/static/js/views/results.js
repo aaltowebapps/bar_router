@@ -4,41 +4,11 @@ window.ResultsView = Backbone.View.extend({
   initialize: function() {
     this.template = _.template(tpl.get('result'));
     this.from = getUrlParam("from");
-    return this.to = getUrlParam("to");
-  },
-  asdf: function() {
-    var _this = this;
-    return Reittiopas.route(this.from, this.to, function(data) {
-      _this.vectors.removeAllFeatures();
-      return _.each(data.legs, function(leg) {
-        var line, points, style;
-        console.log(leg);
-        points = [];
-        _.each(leg.locs, function(point) {
-          var loc;
-          loc = new OpenLayers.LonLat(point.coord.x, point.coord.y).transform(app.wgs84, app.s_mercator);
-          return points.push(new OpenLayers.Geometry.Point(loc.lon, loc.lat));
-        });
-        line = new OpenLayers.Geometry.LineString(points);
-        style = {
-          strokeOpacity: 0.5,
-          strokeWidth: 5
-        };
-        if (["1", "3", "4", "5"].indexOf(leg.type) !== -1) {
-          style["strokeColor"] = "#0000ff";
-        } else if (leg.type === "2") {
-          style["strokeColor"] = "#00ff00";
-        } else if (leg.type === "12") {
-          style["strokeColor"] = "#ff0000";
-        } else if (leg.type === "6") {
-          style["strokeColor"] = "#ff8c00";
-        }
-        return _this.vectors.addFeatures([new OpenLayers.Feature.Vector(line, null, style)]);
-      });
-    });
+    this.to = getUrlParam("to");
+    return this.model = void 0;
   },
   events: {
-    "click #dummy": "render"
+    "click .route a": "showOnMap"
   },
   render: function() {
     var _this = this;
@@ -46,9 +16,8 @@ window.ResultsView = Backbone.View.extend({
     $("#basicMap").hide();
     $(this.el).html("");
     Reittiopas.route(this.from, this.to, function(results) {
-      console.log(results);
+      _this.model = results;
       _.each(results, function(result) {
-        console.log(result);
         return $(_this.el).append(_this.template({
           route: result[0]
         }));
@@ -56,5 +25,9 @@ window.ResultsView = Backbone.View.extend({
       return $("#loader").hide();
     });
     return this;
+  },
+  showOnMap: function(event) {
+    event.preventDefault();
+    return app.resultmap(this.model[0][0]);
   }
 });
