@@ -24,6 +24,7 @@ AppRouter = Backbone.Router.extend
     @located = false
 
 
+
   routes:
     "": "index"
     "route/*splat": "results"
@@ -45,7 +46,7 @@ AppRouter = Backbone.Router.extend
     @currentPage = callback()
 
 
-tpl.loadTemplates [ "index", "result", "resultMap" ], ->
+tpl.loadTemplates [ "index", "result" ], ->
   routes = AppRouter::routes
   for route, action of routes
       routes[route + "/"] = action
