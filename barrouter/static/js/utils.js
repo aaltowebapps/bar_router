@@ -1,4 +1,4 @@
-var getUrlParam, tpl;
+var centerMap, getUrlParam, tpl;
 
 tpl = {
   templates: {},
@@ -34,4 +34,11 @@ getUrlParam = function(name) {
   results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
   if (!results) return;
   return decodeURI(results[1]);
+};
+
+centerMap = function(x, y) {
+  var center;
+  center = new OpenLayers.LonLat(x, y).transform(app.wgs84, app.s_mercator);
+  app.map.setCenter(center, 15);
+  return app.located = true;
 };

@@ -25,7 +25,8 @@ AppRouter = Backbone.Router.extend({
     this.vectors = new OpenLayers.Layer.Vector("Vector layer");
     this.map.addLayer(mapnik);
     this.map.addLayer(this.vectors);
-    return this.map.addControl(new OpenLayers.Control.DrawFeature(this.vectors, OpenLayers.Handler.Path));
+    this.map.addControl(new OpenLayers.Control.DrawFeature(this.vectors, OpenLayers.Handler.Path));
+    return this.located = false;
   },
   routes: {
     "": "index",

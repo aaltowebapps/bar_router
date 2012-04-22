@@ -48,13 +48,14 @@ window.IndexView = Backbone.View.extend({
       pos = data.coords.split(",");
       center = new OpenLayers.LonLat(pos[0], pos[1]).transform(app.wgs84, app.s_mercator);
       _this.currentLocation.move(center);
-      return app.map.setCenter(center, 15);
+      return centerMap(pos[0], pos[1]);
     });
   },
   geolocate: function(position) {
     var center, drag, geometryPoint, lat, lon;
     lon = position.coords.longitude;
     lat = position.coords.latitude;
+    centerMap(lon, lat);
     center = new OpenLayers.LonLat(lon, lat).transform(app.wgs84, app.s_mercator);
     Reittiopas.reverseLocate(center.lon, center.lat, function(data) {
       return $("#from").val(data.name);
@@ -72,7 +73,6 @@ window.IndexView = Backbone.View.extend({
     });
     app.map.addControl(drag);
     drag.activate();
-    app.map.setCenter(center, 15);
   },
   dummyGeolocate: function() {
     return this.geolocate({

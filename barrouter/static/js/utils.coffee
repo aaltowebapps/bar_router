@@ -33,3 +33,9 @@ getUrlParam = (name) ->
     results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href)
     return undefined unless results
     return decodeURI(results[1])
+
+
+centerMap = (x, y) ->
+    center = new OpenLayers.LonLat(x, y).transform(app.wgs84, app.s_mercator)
+    app.map.setCenter center, 15
+    app.located = true

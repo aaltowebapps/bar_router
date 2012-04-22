@@ -21,6 +21,8 @@ AppRouter = Backbone.Router.extend
     @map.addLayer @vectors
     @map.addControl new OpenLayers.Control.DrawFeature(@vectors, OpenLayers.Handler.Path)
 
+    @located = false
+
 
   routes:
     "": "index"

@@ -40,15 +40,19 @@ window.IndexView = Backbone.View.extend
                 $("#from").val "#{data.name}, #{data.city}"
             
             pos = data.coords.split(",")
+            
+            
             center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
             @currentLocation.move(center)
-            app.map.setCenter center, 15
+            centerMap(pos[0], pos[1])
 
 
 
     geolocate: (position) ->
         lon = position.coords.longitude
         lat = position.coords.latitude
+
+        centerMap(lon, lat)
 
         center = new OpenLayers.LonLat(lon, lat).transform(app.wgs84, app.s_mercator)
 
@@ -66,7 +70,6 @@ window.IndexView = Backbone.View.extend
         )
         app.map.addControl drag
         drag.activate()
-        app.map.setCenter center, 15
         return undefined
 
     dummyGeolocate: ->
