@@ -9,7 +9,13 @@ window.IndexView = Backbone.View.extend
         "change #from": "updateFrom"
 
     render: ->
-        $(@el).html @template()
+
+        d = new Date()
+        time =
+            hours: d.getHours()
+            minutes: d.getMinutes()
+
+        $(@el).html @template({time:time})
         $("#basicMap").show()
         $("#to").val "Kamppi"
 

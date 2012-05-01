@@ -8,8 +8,7 @@ html, body {
 
 #basicMap {
   width: 100%;
-  min-height: 300px;
-  height: 80%; }
+  height: 50%; }
 
 #loader {
   display: none;
@@ -24,22 +23,34 @@ html, body {
 a {
   color: white; }
 
+#search {
+  margin: 0 auto;
+  width: 98%;
+  max-width: 320px; }
+
 form {
   text-align: center; }
-
-input {
-  width: 300px; }
-
-input[type=submit] {
-  width: 100px; }
-
-table {
-  margin: 0 auto; }
+  form div {
+    width: 98%;
+    max-width: 320px; }
+  form input {
+    height: 1.5em;
+    margin: 0.4em 0; }
+  form input[type=text] {
+    width: 100%; }
+  form input[type=number] {
+    width: 20%; }
+  form input[type=radio] {
+    width: 10%; }
+  form input[type=submit] {
+    width: 100px;
+    float: right; }
 
 .route {
-  width: 100%;
+  width: 98%;
   max-width: 320px;
-  height: 30%;
+  height: 2em;
+  line-height: 2em;
   margin: 0 auto;
   background-color: white;
   border: 1px solid black;

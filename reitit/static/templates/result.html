@@ -1,0 +1,3 @@
+<div class="route" >
+    <a data-index="<%= index %>" href="#showRoute"><%= route.duration / 60 %>min - <%= route.legs[0].locs[0].depTime.slice(8,10) %>:<%=route.legs[0].locs[0].depTime.slice(10,12)%> - <% _.each(route.legs, function(leg) {print(leg.code);}  ); %></a>
+</div>

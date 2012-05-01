@@ -23,6 +23,10 @@ AppRouter = Backbone.Router.extend
 
     @located = false
 
+    # CSS is stuffed in the main app.js built during deployment
+    unless debug
+      $("head").append "<style type='text/css'>" + collated_stylesheets + "</style>"
+
 
 
   routes:

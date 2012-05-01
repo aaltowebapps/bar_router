@@ -3,8 +3,13 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-import os
-PROJECTPATH = os.getcwd() + '/'
+INTERNAL_IPS = ("192.168.56.1")
+
+if DEBUG:
+    import os
+    PROJECTPATH = os.getcwd() + '/'
+else:
+    PROJECTPATH = "/home/inopia/webapps/reitit/reitit/"
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -68,11 +73,6 @@ STATIC_ROOT = PROJECTPATH + 'static_root/'
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
-# URL prefix for admin static files -- CSS, JavaScript and images.
-# Make sure to use a trailing slash.
-# Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
-
 # Additional locations of static files
 STATICFILES_DIRS = (
     PROJECTPATH + 'static/',
@@ -115,10 +115,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'barrouter.urls'
+ROOT_URLCONF = 'reitit.urls'
 
 TEMPLATE_DIRS = (
-    PROJECTPATH + 'templates/'
+    PROJECTPATH + 'templates/',
+    PROJECTPATH + 'webapps/reitit/reitit/templates/',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.

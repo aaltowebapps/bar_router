@@ -23,8 +23,8 @@ window.ResultsView = Backbone.View.extend
 
         Reittiopas.route @from, @to, (results) =>
             @model = results
-            _.each results, (result) =>
-                $(@el).append(@template(route: result[0]))
+            _.each results, (result, index) =>
+                $(@el).append(@template({route: result[0], index: index}))
 
             $("#loader").hide()
 
@@ -33,7 +33,7 @@ window.ResultsView = Backbone.View.extend
     #these should be bound as anon functions as the elements are created
     showOnMap: (event) ->
         event.preventDefault()
-        model = @model[0][0]
+        model = @model[parseInt(event.currentTarget.getAttribute("data-index"))][0]
         app.vectors.removeAllFeatures()
         _.each model.legs, (leg) =>
             points = []

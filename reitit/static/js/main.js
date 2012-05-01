@@ -29,7 +29,10 @@ AppRouter = Backbone.Router.extend({
     this.map.addLayer(mapnik);
     this.map.addLayer(this.vectors);
     this.map.addControl(new OpenLayers.Control.DrawFeature(this.vectors, OpenLayers.Handler.Path));
-    return this.located = false;
+    this.located = false;
+    if (!debug) {
+      return $("head").append("<style type='text/css'>" + collated_stylesheets + "</style>");
+    }
   },
   routes: {
     "": "index",
