@@ -39,11 +39,13 @@ window.IndexView = Backbone.View.extend({
     return this;
   },
   submit: function(event) {
-    var from, to;
+    var from, time, timetype, to;
     event.preventDefault();
     from = encodeURI(event.target[0].value);
     to = encodeURI(event.target[1].value);
-    return app.navigate("/route/?from=" + from + "&to=" + to, true);
+    time = encodeURI(event.target[2].value + event.target[3].value);
+    timetype = encodeURI(event.target[4].id);
+    return app.navigate("/route/?from=" + from + "&to=" + to + "&time=" + time + "&timetype=" + timetype, true);
   },
   updateFrom: function(event) {
     var _this = this;

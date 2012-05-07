@@ -3,9 +3,20 @@
 window.ResultsView = Backbone.View.extend({
   el: $("#content"),
   initialize: function() {
+    var time, timetype;
     this.template = _.template(tpl.get('result'));
-    this.from = getUrlParam("from");
-    this.to = getUrlParam("to");
+    this.params = {
+      from: getUrlParam("from"),
+      to: getUrlParam("to")
+    };
+    time = getUrlParam("time");
+    timetype = getUrlParam("timetype");
+    if (time) {
+      this.params.time = time;
+    }
+    if (timetype) {
+      this.params.timetype = timetype;
+    }
     this.model = void 0;
     if (!app.located) {
       return Reittiopas.locate(this.from, function(data) {
@@ -22,7 +33,7 @@ window.ResultsView = Backbone.View.extend({
     var _this = this;
     $("#loader").show();
     $(this.el).html("");
-    Reittiopas.route(this.from, this.to, function(results) {
+    Reittiopas.route(this.params, function(results) {
       _this.model = results;
       _.each(results, function(result, index) {
         return $(_this.el).append(_this.template({

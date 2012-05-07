@@ -25,23 +25,11 @@ Reittiopas =
                 #console.log "http://api.reittiopas.fi/hsl/prod/?user=aaltoreittiopas&pass=m33p1qRA&request=reverse_geocode&coordinate=" + pos.lon + "," + pos.lat + "&epsg_out=wgs84&epsg_in=wgs84"
 
 
-    route: (from, to, callback) ->
+    route: (data, callback) ->
+        data.request = "route"
         $.ajax
             method: "GET"
             url: "/api/query/"
-            data:
-                request: "route"
-                from: from
-                to: to
+            data: data
             success: (data) ->
                 callback(data)
-
-        #routes = new Routes()
-        #routes.fetch
-        #    data:
-        #       request: "route"
-        #        from: from
-        #        to: to
-        #    success: (data) ->
-        #        console.log data
-        #        callback(routes)

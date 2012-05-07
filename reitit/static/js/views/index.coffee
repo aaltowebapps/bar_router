@@ -9,7 +9,6 @@ window.IndexView = Backbone.View.extend
         "change #from": "updateFrom"
 
     render: ->
-
         d = new Date()
         time =
             hours: d.getHours()
@@ -36,7 +35,9 @@ window.IndexView = Backbone.View.extend
         event.preventDefault()
         from = encodeURI(event.target[0].value)
         to = encodeURI(event.target[1].value)
-        app.navigate "/route/?from=#{from}&to=#{to}", true
+        time = encodeURI(event.target[2].value + event.target[3].value)
+        timetype = encodeURI(event.target[4].id)
+        app.navigate "/route/?from=#{from}&to=#{to}&time=#{time}&timetype=#{timetype}", true
 
     updateFrom: (event) ->
         Reittiopas.locate event.currentTarget.value, (data) =>
@@ -47,12 +48,9 @@ window.IndexView = Backbone.View.extend
             
             pos = data.coords.split(",")
             
-            
             center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
             @currentLocation.move(center)
             centerMap(pos[0], pos[1])
-
-
 
     geolocate: (position) ->
         lon = position.coords.longitude

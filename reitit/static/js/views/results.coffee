@@ -3,8 +3,15 @@ window.ResultsView = Backbone.View.extend
 
     initialize: ->
         @template = _.template tpl.get('result')
-        @from = getUrlParam("from")
-        @to = getUrlParam("to")
+        @params =
+            from: getUrlParam("from")
+            to: getUrlParam("to")
+
+        time = getUrlParam("time")
+        timetype = getUrlParam("timetype")
+        @params.time = time if time
+        @params.timetype = timetype if timetype
+        
         @model = undefined
 
         unless app.located
@@ -21,7 +28,7 @@ window.ResultsView = Backbone.View.extend
         #$("#basicMap").hide()
         $(@el).html ""
 
-        Reittiopas.route @from, @to, (results) =>
+        Reittiopas.route @params, (results) =>
             @model = results
             _.each results, (result, index) =>
                 $(@el).append(@template({route: result[0], index: index}))

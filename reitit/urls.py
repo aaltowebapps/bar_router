@@ -4,20 +4,18 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from django.conf import settings
 
-from piston.resource import Resource
-
 from searcher import resources
+
 
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
-query_handler = Resource(resources.QueryHandler)
 
 urlpatterns = patterns('',
     url('^$', "searcher.views.index"),
-    url('^api/query/$', query_handler),
+    url('^api/query/$', "searcher.views.queryHandler"),
     #url('^$', 'orgmap.views.index'),
 )
 
