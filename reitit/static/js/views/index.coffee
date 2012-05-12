@@ -52,6 +52,8 @@ window.IndexView = Backbone.View.extend
         app.navigate "/route/?from=#{from}&to=#{to}&time=#{time}&timetype=#{timetype}", true
 
     centerMapByFocusedInput: (event) ->
+        # ToDo: Too slow... should use the values from @currentFromLocation and @currentToLocation
+        # Not done so at the moment due to the different coordinate systems; how to transform to LonLat?
         Reittiopas.locate event.currentTarget.value, (data) =>
             pos = data.coords.split(",")
             center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
