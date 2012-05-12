@@ -7,6 +7,8 @@ window.IndexView = Backbone.View.extend
     events:
         "submit": "submit"
         "change #from": "updateFrom"
+        "click #from": "centerMapByFocusedInput"
+        "click #to": "centerMapByFocusedInput"
 
     render: ->
         d = new Date()
@@ -38,6 +40,12 @@ window.IndexView = Backbone.View.extend
         time = encodeURI(event.target[2].value + event.target[3].value)
         timetype = encodeURI(event.target[4].id)
         app.navigate "/route/?from=#{from}&to=#{to}&time=#{time}&timetype=#{timetype}", true
+
+    centerMapByFocusedInput: (event) ->
+        Reittiopas.locate event.currentTarget.value, (data) =>
+            pos = data.coords.split(",")
+            center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
+            centerMap(pos[0], pos[1]) 
 
     updateFrom: (event) ->
         Reittiopas.locate event.currentTarget.value, (data) =>
