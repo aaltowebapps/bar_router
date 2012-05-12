@@ -7,6 +7,7 @@ window.IndexView = Backbone.View.extend
     events:
         "submit": "submit"
         "change #from": "updateFrom"
+        "change #to": "updateTo"
         "click #from": "centerMapByFocusedInput"
         "click #to": "centerMapByFocusedInput"
 
@@ -18,7 +19,16 @@ window.IndexView = Backbone.View.extend
 
         $(@el).html @template({time:time})
         $("#basicMap").show()
-        $("#to").val "Kamppi"
+
+        Reittiopas.locate "Kamppi", (data) =>
+            if data.details.houseNumber
+                $("#to").val "#{data.name} #{data.details.houseNumber}, #{data.city}"
+            else
+                $("#to").val "#{data.name}, #{data.city}"
+            
+            pos = data.coords.split(",")
+            center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
+            @currentToLocation = @initDragPoint center, "#to"
 
         if navigator.geolocation
             # awesome closures
@@ -48,17 +58,25 @@ window.IndexView = Backbone.View.extend
             centerMap(pos[0], pos[1]) 
 
     updateFrom: (event) ->
-        Reittiopas.locate event.currentTarget.value, (data) =>
+        @updatePosition event.currentTarget.value, "#from", @currentFromLocation
+        return undefined
+
+    updateTo: (event) ->
+        @updatePosition event.currentTarget.value, "#to", @currentToLocation
+        return undefined
+
+    updatePosition: (searchAddress, targetTextBox, targetDragVector) ->
+        Reittiopas.locate searchAddress, (data) =>
             if data.details.houseNumber
-                $("#from").val "#{data.name} #{data.details.houseNumber}, #{data.city}"
+                $(targetTextBox).val "#{data.name} #{data.details.houseNumber}, #{data.city}"
             else
-                $("#from").val "#{data.name}, #{data.city}"
+                $(targetTextBox).val "#{data.name}, #{data.city}"
             
             pos = data.coords.split(",")
-            
             center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
-            @currentLocation.move(center)
+            targetDragVector.move(center)
             centerMap(pos[0], pos[1])
+        return undefined
 
     geolocate: (position) ->
         lon = position.coords.longitude
@@ -67,21 +85,11 @@ window.IndexView = Backbone.View.extend
         centerMap(lon, lat)
 
         center = new OpenLayers.LonLat(lon, lat).transform(app.wgs84, app.s_mercator)
+        @currentFromLocation = @initDragPoint center, "#from"
 
         Reittiopas.reverseLocate center.lon, center.lat, (data) ->
             $("#from").val data.name
 
-        geometryPoint = new OpenLayers.Geometry.Point(center.lon, center.lat)
-        @currentLocation = new OpenLayers.Feature.Vector(geometryPoint)
-        app.vectors.addFeatures [ @currentLocation ]
-        drag = new OpenLayers.Control.DragFeature(app.vectors,
-            autoActivate: true
-            onComplete: (event) ->
-                Reittiopas.reverseLocate event.geometry.x, event.geometry.y, (data) ->
-                    $("#from").val data.name
-        )
-        app.map.addControl drag
-        drag.activate()
         return undefined
 
     dummyGeolocate: ->
@@ -89,3 +97,19 @@ window.IndexView = Backbone.View.extend
             coords:
                 longitude: 24.829577200463
                 latititude: 60.183374850576
+
+    initDragPoint: (location, targetTextBox) ->
+        geometryPoint = new OpenLayers.Geometry.Point(location.lon, location.lat)
+        dragpoint = new OpenLayers.Feature.Vector(geometryPoint)
+        app.vectors.addFeatures [ dragpoint ]
+        drag = new OpenLayers.Control.DragFeature(
+            app.vectors,
+            autoActivate: true
+            onComplete: (event) =>
+                Reittiopas.reverseLocate event.geometry.x, event.geometry.y, (data) ->
+                    #alert targetTextBox #ToDo: Issue with closures :(
+                    $(realTargetTextBox).val data.name
+        )
+        app.map.addControl drag
+        drag.activate()
+        return dragpoint
