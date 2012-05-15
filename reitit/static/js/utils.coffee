@@ -28,6 +28,11 @@ tpl =
   get: (name) ->
     @templates[name]
 
+printStack = () ->
+    try
+      printStackExceptionTrigger += 10
+    catch error
+      console.debug(error.stack)
 
 getUrlParam = (name) ->
     results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href)
