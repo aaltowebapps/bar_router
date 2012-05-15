@@ -89,7 +89,7 @@ def _prepare_deploy():
 
         lib = ""
         libdir = "lib/"
-        for filu in ("jquery-1.7.1.min.js", "underscore-min.js", "backbone-min.js", "OpenLayers.js"):
+        for filu in ("jquery-1.7.1.min.js", "jqm-config.js", "jquery.mobile-1.1.0.min.js", "underscore-min.js", "backbone-min.js", "OpenLayers.mobile.js"):
             with open(libdir + filu) as libfile:
                 lib += libfile.read()
 
@@ -171,7 +171,7 @@ def _install():
 		run("find ./ -type f -exec sed -i 's/<!--remove//g' {} ';'")
 		run("find ./ -type f -exec sed -i 's/remove-->//g' {} ';'")
     
-        if env.install_static:
-            _update_cache()
+#        if env.install_static:
+#            _update_cache()
 
 	run(appdir + "/apache2/bin/start")

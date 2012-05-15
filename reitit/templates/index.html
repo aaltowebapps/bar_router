@@ -1,58 +1,60 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en"{% if not debug %} manifest="{% get_static_prefix %}reitit.appcache"{% endif %}>
+<html lang="en"{% if not debug %} manifest="{% get_static_prefix %}reitit.appcache"{% endif %} class="ui-mobile-rendering">
     <head>
+        <title>reitit.info</title>
+        <meta name="description" content="Modern reittiopas application for mobile and desktop use. Uses modern browser features like location detection and tries to minimize page loads." />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
         <link rel="stylesheet" href="{% get_static_prefix %}css/responsive.css" />
-        {% if debug %}
-        <link rel="stylesheet" href="{% get_static_prefix %}css/style.css" />
-        {% endif %}
+        {#% if debug %#}<link rel="stylesheet" href="{% get_static_prefix %}css/style.css" />{#% endif %#}
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+        
         <link rel="shortcut icon" href="{% get_static_prefix %}favicon.ico" />
         
-        <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
-        <meta name="apple-mobile-web-app-capable" content="yes" />
+        
+
+<!--        <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-<!--        <link rel="apple-touch-icon" href="apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" href="apple-touch-icon-57x57.png" />
         <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png" />
         <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png" />
         <link rel="apple-touch-startup-image" href="apple-touch-startup-image-320x460.png" />
         <link rel="apple-touch-startup-image" sizes="768x1004" href="apple-touch-startup-image-768x1004.png" />-->
-
-        <title>reitit.info</title>
-        <meta name="description" content="Modern reittiopas application for mobile and desktop use. Uses modern browser features like location detection and tries to minimize page loads." />
-    </head>
-    <body>
-        <div id="loader"></div><!-- get spinner here -->
-        <div id="basicMap"></div>
-        <div id="content"></div>
-        
-
         <script type="text/javascript">
             var static_prefix = '{% get_static_prefix %}';
         </script>
 
-        {% if debug %}
+        {#% if debug %#}
             <script type="text/javascript">
                 var debug = true;
             </script>
             
-            <!--<script src="{% get_static_prefix %}lib/OpenLayers.js"></script>-->
-            <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
             <script src="{% get_static_prefix %}lib/jquery-1.7.1.min.js"></script>
+            <script src="{% get_static_prefix %}lib/jqm-config.js"></script>
+            <script src="{% get_static_prefix %}lib/jquery.mobile-1.1.0.min.js"></script>
+            <!--<script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>-->
             <script src="{% get_static_prefix %}lib/underscore-min.js"></script>
             <script src="{% get_static_prefix %}lib/backbone-min.js"></script>
+            <script src="{% get_static_prefix %}lib/OpenLayers.mobile.js"></script>
+            <!--<script src="{% get_static_prefix %}lib/OpenLayers.js"></script>-->
+            <!--<script src="http://www.openlayers.org/dev/OpenLayers.mobile.js"></script>-->
 
-            <script src="{% get_static_prefix %}js/reittiopas.js"></script>
-            <script src="{% get_static_prefix %}js/utils.js"></script>
-            <script src="{% get_static_prefix %}js/models.js"></script>
             <script src="{% get_static_prefix %}js/views/index.js"></script>
             <script src="{% get_static_prefix %}js/views/results.js"></script>
+
+            <script src="{% get_static_prefix %}js/models.js"></script>
+            <script src="{% get_static_prefix %}js/utils.js"></script>
             <script src="{% get_static_prefix %}js/main.js"></script>
-        {% else %}
-            <script type="text/javascript">
+            <script src="{% get_static_prefix %}js/reittiopas.js"></script>
+        {#% else %#}
+<!--            <script type="text/javascript">
                 var debug = false;
             </script>
-            <script src="{% get_static_prefix %}js/app.js"></script>
-        {% endif %}
-    </body>
+            <script src="{% get_static_prefix %}js/app.js"></script>-->
+        {#% endif %#}
+    </head>
+
+    <body></body>
 </html> 

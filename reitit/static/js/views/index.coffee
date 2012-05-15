@@ -1,15 +1,28 @@
 window.IndexView = Backbone.View.extend
-    el: $("#content")
+#    el: $("#content")
 
     initialize: ->
-        @template = _.template tpl.get('index')
+        @template = _.template tpl.get('searcher')
+
+    initMap: ->
+        app.map.render $("#basicMap")[0]
+        # This works only as a timeout. Otherwise the map has wrong size.
+
+        @resizeMap()
+        $(window).on "resize", @resizeMap
+        
+    resizeMap: ->
+        h = $(window).height() - $("#header h1").height() - $("#content").height() - 55
+        h = Math.max(h, 120)
+        $("#basicMap").height(h + "px")
+        app.map.updateSize()
 
     events:
         "submit": "submit"
         "change #from": "updateFrom"
         "change #to": "updateTo"
-        "click #from": "centerMapByFocusedInput"
-        "click #to": "centerMapByFocusedInput"
+        "blur #from": "centerMapByFocusedInput"
+        "blur #to": "centerMapByFocusedInput"
 
     render: ->
         d = new Date()
@@ -18,17 +31,16 @@ window.IndexView = Backbone.View.extend
             minutes: d.getMinutes()
 
         $(@el).html @template({time:time})
-        $("#basicMap").show()
 
-        Reittiopas.locate "Kamppi", (data) =>
-            if data.details.houseNumber
-                $("#to").val "#{data.name} #{data.details.houseNumber}, #{data.city}"
-            else
-                $("#to").val "#{data.name}, #{data.city}"
-            
-            pos = data.coords.split(",")
-            center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
-            @currentToLocation = @initDragPoint center, "#to"
+        #Reittiopas.locate "Kamppi", (data) =>
+        #    if data.details.houseNumber
+        #        $("#to").val "#{data.name} #{data.details.houseNumber}, #{data.city}"
+        #    else
+        #        $("#to").val "#{data.name}, #{data.city}"
+        #    
+        #    pos = data.coords.split(",")
+        #    center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
+        #    @currentToLocation = @initDragPoint center, "#to"
 
         if navigator.geolocation
             # awesome closures
@@ -39,7 +51,8 @@ window.IndexView = Backbone.View.extend
                     @dummyGeolocate()
                 navigator.geolocation.getCurrentPosition success, fail
         else
-            dummyGeolocate()
+            @dummyGeolocate()
+
 
         return @
 
@@ -48,12 +61,14 @@ window.IndexView = Backbone.View.extend
         from = encodeURI(event.target[0].value)
         to = encodeURI(event.target[1].value)
         time = encodeURI(event.target[2].value + event.target[3].value)
-        timetype = encodeURI(event.target[4].id)
+        console.log(event.target[4].value)
+        timetype = encodeURI(event.target[4].value)
         app.navigate "/route/?from=#{from}&to=#{to}&time=#{time}&timetype=#{timetype}", true
 
     centerMapByFocusedInput: (event) ->
         # ToDo: Too slow... should use the values from @currentFromLocation and @currentToLocation
         # Not done so at the moment due to the different coordinate systems; how to transform to LonLat?
+        console.log event
         Reittiopas.locate event.currentTarget.value, (data) =>
             pos = data.coords.split(",")
             center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
@@ -86,8 +101,10 @@ window.IndexView = Backbone.View.extend
 
         centerMap(lon, lat)
 
+        app.located = true
+
         center = new OpenLayers.LonLat(lon, lat).transform(app.wgs84, app.s_mercator)
-        @currentFromLocation = @initDragPoint center, "#from"
+#        @currentFromLocation = @initDragPoint center, "#from"
 
         Reittiopas.reverseLocate center.lon, center.lat, (data) ->
             $("#from").val data.name
@@ -103,15 +120,15 @@ window.IndexView = Backbone.View.extend
     initDragPoint: (location, targetTextBox) ->
         geometryPoint = new OpenLayers.Geometry.Point(location.lon, location.lat)
         dragpoint = new OpenLayers.Feature.Vector(geometryPoint)
-        app.vectors.addFeatures [ dragpoint ]
+        @vectors.addFeatures [ dragpoint ]
         drag = new OpenLayers.Control.DragFeature(
-            app.vectors,
+            @vectors,
             autoActivate: true
             onComplete: (event) =>
                 Reittiopas.reverseLocate event.geometry.x, event.geometry.y, (data) ->
                     #alert targetTextBox #ToDo: Issue with closures :(
                     $(realTargetTextBox).val data.name
         )
-        app.map.addControl drag
+        @map.addControl drag
         drag.activate()
         return dragpoint

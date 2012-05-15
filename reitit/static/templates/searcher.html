@@ -1,0 +1,23 @@
+<div data-role="header" id="header">
+    <h1>reitit.info</h1>
+    <div id="basicMap"></div>
+</div>
+<div data-role="content" id="content">
+    <div id="search">
+    <form>
+        <input type="text" id="from" name="from" placeholder="lähtöpaikka" data-mini="true" />
+        <input type="text" id="to" name="to" placeholder="määränpää" data-mini="true" />
+
+        <div class="number-box">
+            <input type="number" name="hour" id="hour" min="0" max="23" value="<%= time.hours %>" />
+            <input type="number" name="minute" id="minute" min="0" max="59" value="<%= time.minutes %>" />
+        <select name="slider" id="flip-min" data-role="slider">
+            <option value="departure">Lähtö</option>
+            <option value="arrival">Perillä</option>
+        </select>
+        </div>
+
+        <input type="submit" value="Hae" data-mini="true" />
+    </form>
+    </div>
+</div>

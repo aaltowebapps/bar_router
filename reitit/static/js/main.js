@@ -3,14 +3,6 @@ var AppRouter, app;
 
 app = void 0;
 
-Backbone.View.prototype.close = function() {
-  console.log("Closing view " + this);
-  if (this.beforeClose) {
-    this.beforeClose();
-  }
-  return this.undelegateEvents();
-};
-
 Backbone.View.prototype.navigateAnchor = function(event) {
   event.preventDefault();
   return app.navigate(event.currentTarget.getAttribute("href"), {
@@ -20,53 +12,66 @@ Backbone.View.prototype.navigateAnchor = function(event) {
 
 AppRouter = Backbone.Router.extend({
   initialize: function() {
-    var mapnik;
     this.wgs84 = new OpenLayers.Projection("EPSG:4326");
     this.s_mercator = new OpenLayers.Projection("EPSG:900913");
-    this.map = new OpenLayers.Map("basicMap");
-    mapnik = new OpenLayers.Layer.OSM();
-    this.vectors = new OpenLayers.Layer.Vector("Vector layer");
-    this.map.addLayer(mapnik);
-    this.map.addLayer(this.vectors);
-    this.map.addControl(new OpenLayers.Control.DrawFeature(this.vectors, OpenLayers.Handler.Path));
+    this.map = new OpenLayers.Map({
+      theme: null,
+      controls: [
+        new OpenLayers.Control.Attribution(), new OpenLayers.Control.TouchNavigation({
+          dragPanOptions: {
+            enableKinetcs: true
+          }
+        }), new OpenLayers.Control.Zoom()
+      ],
+      layers: [
+        new OpenLayers.Layer.OSM("OpenStreetMap", null, {
+          transitionEffect: 'resize'
+        })
+      ],
+      center: new OpenLayers.LonLat(742000, 5861000),
+      zoom: 14
+    });
     this.located = false;
     if (!debug) {
-      return $("head").append("<style type='text/css'>" + collated_stylesheets + "</style>");
+      $("head").append("<style type='text/css'>" + collated_stylesheets + "</style>");
     }
+    $(".back").on("click", function(event) {
+      window.history.back();
+      return false;
+    });
+    return this.firstPage = true;
   },
   routes: {
     "": "index",
     "route/*splat": "results"
   },
   index: function() {
-    var _this = this;
-    return this.before(function() {
-      return new IndexView().render();
-    });
+    return this.changePage(new IndexView());
   },
   results: function() {
-    var _this = this;
-    return this.before(function() {
-      return new ResultsView().render();
-    });
+    return this.changePage(new ResultsView());
   },
-  resultmap: function(model) {
-    var _this = this;
-    return this.before(function() {
-      return new ResultMapView({
-        model: model
-      }).render();
-    });
-  },
-  before: function(callback) {
-    if (this.currentPage) {
-      this.currentPage.close();
+  changePage: function(page) {
+    var transition;
+    $(page.el).attr("data-role", "page");
+    page.render();
+    $("body").append($(page.el));
+    transition = $.mobile.defaultPageTransition;
+    if (this.firstPage) {
+      transition = "none";
+      this.firstPage = false;
     }
-    return this.currentPage = callback();
+    $.mobile.changePage($(page.el), {
+      changeHash: false,
+      transition: transition
+    });
+    if (page.initMap) {
+      return page.initMap();
+    }
   }
 });
 
-tpl.loadTemplates(["index", "result"], function() {
+tpl.loadTemplates(["searcher", "result"], function() {
   var action, route, routes;
   routes = AppRouter.prototype.routes;
   for (route in routes) {

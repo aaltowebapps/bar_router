@@ -8,7 +8,7 @@ html, body {
 
 #basicMap {
   width: 100%;
-  height: 50%; }
+  height: 200px; }
 
 #loader {
   display: none;
@@ -23,28 +23,17 @@ html, body {
 a {
   color: white; }
 
-#search {
-  margin: 0 auto;
-  width: 98%;
-  max-width: 320px; }
+div.number-box {
+  margin-left: 0.4em; }
+  div.number-box input {
+    display: inline-block;
+    width: 20%;
+    max-width: 100px;
+    vertical-align: top; }
 
-form {
-  text-align: center; }
-  form div {
-    width: 98%;
-    max-width: 320px; }
-  form input {
-    height: 1.5em;
-    margin: 0.4em 0; }
-  form input[type=text] {
-    width: 100%; }
-  form input[type=number] {
-    width: 20%; }
-  form input[type=radio] {
-    width: 10%; }
-  form input[type=submit] {
-    width: 100px;
-    float: right; }
+#search {
+  max-width: 500px;
+  margin: 0 auto; }
 
 .route {
   width: 98%;
@@ -57,3 +46,51 @@ form {
   text-align: center; }
   .route a {
     color: black; }
+
+div.olControlZoom {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  padding: 2px; }
+
+.olButton {
+  color: white !important; }
+
+div.olControlZoom a {
+  display: block;
+  margin: 1px;
+  padding: 0;
+  color: white;
+  font-size: 28px;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  height: 32px;
+  width: 32px;
+  line-height: 28px;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+  /* fallback for IE - IE6 requires background shorthand */
+  background: #130085;
+  background: rgba(0, 60, 136, 0.5);
+  filter: alpha(opacity=80); }
+
+a.olControlZoomIn {
+  border-radius: 4px 4px 0 0; }
+
+a.olControlZoomOut {
+  border-radius: 0 0 4px 4px; }
+
+div.olControlZoom a:hover {
+  background: #130085;
+  background: rgba(0, 60, 136, 0.7);
+  filter: alpha(opacity=100); }
+
+.olLayerGrid .olTileImage {
+  -webkit-transition: opacity 0.2s linear;
+  -ms-transition: opacity 0.2s linear;
+  -moz-transition: opacity 0.2s linear;
+  -o-transition: opacity 0.2s linear;
+  transition: opacity 0.2s linear; }

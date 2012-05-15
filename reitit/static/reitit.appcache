@@ -1,0 +1,8 @@
+CACHE MANIFEST
+#2012-05-15 21:37:42
+CACHE:
+NETWORK:
+*
+http://*
+https://*
+/api/
