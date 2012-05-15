@@ -39,8 +39,13 @@ getUrlParam = (name) ->
     return undefined unless results
     return decodeURI(results[1])
 
-
 centerMap = (x, y) ->
     center = new OpenLayers.LonLat(x, y).transform(app.wgs84, app.s_mercator)
     app.map.setCenter center, 15
     app.located = true
+
+Array.prototype.clean = (deleteValue) ->
+    index = this.indexOf(deleteValue)
+    while index != -1 and this.length > 0
+        this.splice(index, 1)
+    return this

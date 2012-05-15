@@ -32,12 +32,19 @@ form {
   text-align: center; }
   form div {
     width: 98%;
-    max-width: 320px; }
+    max-width: 320px;
+    clear: both; }
   form input {
     height: 1.5em;
     margin: 0.4em 0; }
   form input[type=text] {
-    width: 100%; }
+    width: 100%;
+    margin-right: -25px;
+    float: left; }
+  form input[type=image] {
+    width: 20px;
+    margin-top: 8px;
+    float: left; }
   form input[type=number] {
     width: 20%; }
   form input[type=radio] {

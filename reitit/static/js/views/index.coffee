@@ -10,6 +10,8 @@ window.IndexView = Backbone.View.extend
         "change #to": "updateTo"
         "click #from": "centerMapByFocusedInput"
         "click #to": "centerMapByFocusedInput"
+        "click #favfrom": "favToggleFrom"
+        "click #favto": "favToggleTo"
 
     render: ->
         d = new Date()
@@ -115,3 +117,25 @@ window.IndexView = Backbone.View.extend
         app.map.addControl drag
         drag.activate()
         return dragpoint
+
+    # Handles a favorites toggle for the given direction, "from" or "to"
+    favToggle: (direction) ->
+        el = $("#fav" + direction)[0]
+        enabled = el.src.contains "off"
+        if enabled then el.src = el.src.replace("off", "on")
+        else el.src = el.src.replace("on", "off")
+
+        address = $("#" + direction)[0].value
+        if enabled then Favorites.add(address)
+        else Favorites.remove(address)
+        return enabled
+
+    favToggleFrom: (event) ->
+        event.preventDefault()
+        @favToggle("from")
+        return undefined
+
+    favToggleTo: (event) ->
+        event.preventDefault()
+        @favToggle("to")
+        return undefined
