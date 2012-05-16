@@ -15,17 +15,16 @@ Reittiopas = {
       }
     });
   },
-  reverseLocate: function(x, y, callback) {
-    var pos;
-    pos = new OpenLayers.LonLat(x, y).transform(app.s_mercator, app.wgs84);
+  reverseLocate: function(coords, callback) {
     return $.ajax({
       method: "GET",
       url: "/api/query/",
       data: {
-        coordinate: "" + pos.lon + "," + pos.lat,
+        coordinate: "" + coords.lon + "," + coords.lat,
         request: "reverse_geocode"
       },
       success: function(data) {
+        console.log(data);
         return callback(data[0]);
       }
     });

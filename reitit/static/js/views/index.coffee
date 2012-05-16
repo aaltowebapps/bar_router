@@ -6,9 +6,8 @@ window.IndexView = Backbone.View.extend
 
     initMap: ->
         app.map.render $("#basicMap")[0]
-        # This works only as a timeout. Otherwise the map has wrong size.
-
         @resizeMap()
+        #TODO remove this on view close
         $(window).on "resize", @resizeMap
         
     resizeMap: ->
@@ -32,15 +31,19 @@ window.IndexView = Backbone.View.extend
 
         $(@el).html @template({time:time})
 
-        #Reittiopas.locate "Kamppi", (data) =>
-        #    if data.details.houseNumber
-        #        $("#to").val "#{data.name} #{data.details.houseNumber}, #{data.city}"
-        #    else
-        #        $("#to").val "#{data.name}, #{data.city}"
-        #    
-        #    pos = data.coords.split(",")
-        #    center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
-        #    @currentToLocation = @initDragPoint center, "#to"
+#        Reittiopas.locate "Kamppi", (data) =>
+#            if data.details.houseNumber
+#                $("#to").val "#{data.name} #{data.details.houseNumber}, #{data.city}"
+#            else
+#                $("#to").val "#{data.name}, #{data.city}"
+#            
+#            pos = data.coords.split(",")
+#            wgs_coors =
+#                lon: pos[0]
+#                lat: pos[1]
+#
+#            sm_coords = toSMercator wgs_coords
+#            @currentToLocation = @initDragPoint sm_coords, "#to"
 
         if navigator.geolocation
             # awesome closures
@@ -96,17 +99,16 @@ window.IndexView = Backbone.View.extend
         return undefined
 
     geolocate: (position) ->
-        lon = position.coords.longitude
-        lat = position.coords.latitude
+        wgs_coords =
+            lon: position.coords.longitude
+            lat: position.coords.latitude
 
-        centerMap(lon, lat)
-
+        sm_coords = toSMercator wgs_coords
+        centerMap sm_coords
         app.located = true
+        @currentFromLocation = @initDragPoint sm_coords, "#from"
 
-        center = new OpenLayers.LonLat(lon, lat).transform(app.wgs84, app.s_mercator)
-#        @currentFromLocation = @initDragPoint center, "#from"
-
-        Reittiopas.reverseLocate center.lon, center.lat, (data) ->
+        Reittiopas.reverseLocate wgs_coords, (data) ->
             $("#from").val data.name
 
         return undefined
@@ -119,16 +121,23 @@ window.IndexView = Backbone.View.extend
 
     initDragPoint: (location, targetTextBox) ->
         geometryPoint = new OpenLayers.Geometry.Point(location.lon, location.lat)
-        dragpoint = new OpenLayers.Feature.Vector(geometryPoint)
-        @vectors.addFeatures [ dragpoint ]
-        drag = new OpenLayers.Control.DragFeature(
-            @vectors,
+        sytle =
+            fillColor: "#ee0000"
+            fillOpacity: 0.4
+            strokeColor: "#ff0000"
+            pointRadius: 6
+
+        dragpoint = new OpenLayers.Feature.Vector(geometryPoint, null, sytle)
+        app.vectors.addFeatures [ dragpoint ]
+        drag = new OpenLayers.Control.DragFeature app.vectors,
             autoActivate: true
             onComplete: (event) =>
-                Reittiopas.reverseLocate event.geometry.x, event.geometry.y, (data) ->
-                    #alert targetTextBox #ToDo: Issue with closures :(
-                    $(realTargetTextBox).val data.name
-        )
-        @map.addControl drag
+                sm_coords =
+                    lon: event.geometry.x
+                    lat: event.geometry.y
+                Reittiopas.reverseLocate toWGS(sm_coords), (data) =>
+                    $(targetTextBox).val data.name
+        
+        app.map.addControl drag
         drag.activate()
         return dragpoint

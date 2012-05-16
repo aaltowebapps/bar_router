@@ -35,7 +35,13 @@ getUrlParam = (name) ->
     return decodeURI(results[1])
 
 
-centerMap = (x, y) ->
-    center = new OpenLayers.LonLat(x, y).transform(app.wgs84, app.s_mercator)
-    app.map.setCenter center, 15
+centerMap = (coords) ->
+    # Eats s_mercator coordinates
+    app.map.setCenter coords, 14
     app.located = true
+
+toSMercator = (coords) ->
+    return new OpenLayers.LonLat(coords.lon, coords.lat).transform(app.wgs84, app.s_mercator)
+
+toWGS = (coords) ->
+    return new OpenLayers.LonLat(coords.lon, coords.lat).transform(app.s_mercator, app.wgs84)

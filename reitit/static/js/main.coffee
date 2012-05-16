@@ -8,6 +8,7 @@ AppRouter = Backbone.Router.extend
     initialize: ->
         @wgs84 = new OpenLayers.Projection("EPSG:4326")
         @s_mercator = new OpenLayers.Projection("EPSG:900913")
+        @vectors = new OpenLayers.Layer.Vector("Vector layer")
         @map = new OpenLayers.Map
             theme: null
             controls: [
@@ -15,9 +16,11 @@ AppRouter = Backbone.Router.extend
                 new OpenLayers.Control.TouchNavigation
                     dragPanOptions: {enableKinetcs: true }
                 new OpenLayers.Control.Zoom()
+                new OpenLayers.Control.DrawFeature(@vectors, OpenLayers.Handler.Path)
             ]
             layers: [
                 new OpenLayers.Layer.OSM("OpenStreetMap", null, {transitionEffect: 'resize'})
+                @vectors
             ]
             center: new OpenLayers.LonLat(742000, 5861000)
             zoom: 14
@@ -27,10 +30,10 @@ AppRouter = Backbone.Router.extend
 
 #        @map = new OpenLayers.Map("basicMap")
 #        mapnik = new OpenLayers.Layer.OSM()
-#        @vectors = new OpenLayers.Layer.Vector("Vector layer")
 #        @map.addLayer mapnik
 #        @map.addLayer @vectors
-#        @map.addControl new OpenLayers.Control.DrawFeature(@vectors, OpenLayers.Handler.Path)
+#        @map.addControl 
+#        new OpenLayers.Control.DrawFeature(@vectors, OpenLayers.Handler.Path)
 
 
         @located = false

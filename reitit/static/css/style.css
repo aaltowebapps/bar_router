@@ -35,6 +35,13 @@ div.number-box {
   max-width: 500px;
   margin: 0 auto; }
 
+input[type=text].ui-input-text {
+  width: 90%; }
+
+.squeeze {
+  margin: 0;
+  padding: 0; }
+
 .route {
   width: 98%;
   max-width: 320px;

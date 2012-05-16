@@ -92,13 +92,16 @@ window.IndexView = Backbone.View.extend({
     });
   },
   geolocate: function(position) {
-    var center, lat, lon;
-    lon = position.coords.longitude;
-    lat = position.coords.latitude;
-    centerMap(lon, lat);
+    var sm_coords, wgs_coords;
+    wgs_coords = {
+      lon: position.coords.longitude,
+      lat: position.coords.latitude
+    };
+    sm_coords = toSMercator(wgs_coords);
+    centerMap(sm_coords);
     app.located = true;
-    center = new OpenLayers.LonLat(lon, lat).transform(app.wgs84, app.s_mercator);
-    Reittiopas.reverseLocate(center.lon, center.lat, function(data) {
+    this.currentFromLocation = this.initDragPoint(sm_coords, "#from");
+    Reittiopas.reverseLocate(wgs_coords, function(data) {
       return $("#from").val(data.name);
     });
   },
@@ -111,20 +114,31 @@ window.IndexView = Backbone.View.extend({
     });
   },
   initDragPoint: function(location, targetTextBox) {
-    var drag, dragpoint, geometryPoint,
+    var drag, dragpoint, geometryPoint, sytle,
       _this = this;
     geometryPoint = new OpenLayers.Geometry.Point(location.lon, location.lat);
-    dragpoint = new OpenLayers.Feature.Vector(geometryPoint);
-    this.vectors.addFeatures([dragpoint]);
-    drag = new OpenLayers.Control.DragFeature(this.vectors, {
+    sytle = {
+      fillColor: "#ee0000",
+      fillOpacity: 0.4,
+      strokeColor: "#ff0000",
+      pointRadius: 6
+    };
+    dragpoint = new OpenLayers.Feature.Vector(geometryPoint, null, sytle);
+    app.vectors.addFeatures([dragpoint]);
+    drag = new OpenLayers.Control.DragFeature(app.vectors, {
       autoActivate: true,
       onComplete: function(event) {
-        return Reittiopas.reverseLocate(event.geometry.x, event.geometry.y, function(data) {
-          return $(realTargetTextBox).val(data.name);
+        var sm_coords;
+        sm_coords = {
+          lon: event.geometry.x,
+          lat: event.geometry.y
+        };
+        return Reittiopas.reverseLocate(toWGS(sm_coords), function(data) {
+          return $(targetTextBox).val(data.name);
         });
       }
     });
-    this.map.addControl(drag);
+    app.map.addControl(drag);
     drag.activate();
     return dragpoint;
   }

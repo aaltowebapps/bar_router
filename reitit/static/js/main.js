@@ -14,6 +14,7 @@ AppRouter = Backbone.Router.extend({
   initialize: function() {
     this.wgs84 = new OpenLayers.Projection("EPSG:4326");
     this.s_mercator = new OpenLayers.Projection("EPSG:900913");
+    this.vectors = new OpenLayers.Layer.Vector("Vector layer");
     this.map = new OpenLayers.Map({
       theme: null,
       controls: [
@@ -21,12 +22,12 @@ AppRouter = Backbone.Router.extend({
           dragPanOptions: {
             enableKinetcs: true
           }
-        }), new OpenLayers.Control.Zoom()
+        }), new OpenLayers.Control.Zoom(), new OpenLayers.Control.DrawFeature(this.vectors, OpenLayers.Handler.Path)
       ],
       layers: [
         new OpenLayers.Layer.OSM("OpenStreetMap", null, {
           transitionEffect: 'resize'
-        })
+        }), this.vectors
       ],
       center: new OpenLayers.LonLat(742000, 5861000),
       zoom: 14
