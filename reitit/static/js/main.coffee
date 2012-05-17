@@ -26,16 +26,6 @@ AppRouter = Backbone.Router.extend
             zoom: 14
 
 
-                
-
-#        @map = new OpenLayers.Map("basicMap")
-#        mapnik = new OpenLayers.Layer.OSM()
-#        @map.addLayer mapnik
-#        @map.addLayer @vectors
-#        @map.addControl 
-#        new OpenLayers.Control.DrawFeature(@vectors, OpenLayers.Handler.Path)
-
-
         @located = false
   
         # CSS is stuffed in the main app.js built during deployment
@@ -65,11 +55,13 @@ AppRouter = Backbone.Router.extend
         $(page.el).attr "data-role", "page"
         page.render()
         $("body").append $(page.el)
-        transition = $.mobile.defaultPageTransition
+#        transition = $.mobile.defaultPageTransition
+        transition = "slide"
         if @firstPage
             transition = "none"
             @firstPage = false
 
+        console.log transition
         $.mobile.changePage $(page.el),
             changeHash: false
             transition: transition
@@ -77,7 +69,7 @@ AppRouter = Backbone.Router.extend
         page.initMap() if page.initMap
 
 
-tpl.loadTemplates [ "searcher", "result" ], ->
+tpl.loadTemplates [ "searcher", "results", "result-item" ], ->
     routes = AppRouter::routes
     for route, action of routes
         routes[route + "/"] = action

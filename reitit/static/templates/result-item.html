@@ -1,0 +1,1 @@
+<a style="text-align: center;" data-index="<%= index %>" href="#showRoute"><%= route.legs[0].locs[0].depTime.slice(8,10) %>:<%=route.legs[0].locs[0].depTime.slice(10,12)%> - | <% _.each(route.legs, function(leg) { if (leg.code) {print(leg.code + " | ")} else {print("w | ")};}  ); %> - <%= route.duration / 60 %>min</a>

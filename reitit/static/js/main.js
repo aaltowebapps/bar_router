@@ -57,11 +57,12 @@ AppRouter = Backbone.Router.extend({
     $(page.el).attr("data-role", "page");
     page.render();
     $("body").append($(page.el));
-    transition = $.mobile.defaultPageTransition;
+    transition = "slide";
     if (this.firstPage) {
       transition = "none";
       this.firstPage = false;
     }
+    console.log(transition);
     $.mobile.changePage($(page.el), {
       changeHash: false,
       transition: transition
@@ -72,7 +73,7 @@ AppRouter = Backbone.Router.extend({
   }
 });
 
-tpl.loadTemplates(["searcher", "result"], function() {
+tpl.loadTemplates(["searcher", "results", "result-item"], function() {
   var action, route, routes;
   routes = AppRouter.prototype.routes;
   for (route in routes) {
