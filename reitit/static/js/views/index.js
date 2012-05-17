@@ -37,11 +37,19 @@ window.IndexView = Backbone.View.extend({
       time: time
     }));
     Reittiopas.locate("Kamppi", function(data) {
+      var pos, sm_coords, wgs_coords;
       if (data.details.houseNumber) {
-        return $("#to").val("" + data.name + " " + data.details.houseNumber + ", " + data.city);
+        $("#to").val("" + data.name + " " + data.details.houseNumber + ", " + data.city);
       } else {
-        return $("#to").val("" + data.name + ", " + data.city);
+        $("#to").val("" + data.name + ", " + data.city);
       }
+      pos = data.coords.split(",");
+      wgs_coords = {
+        lon: pos[0],
+        lat: pos[1]
+      };
+      sm_coords = toSMercator(wgs_coords);
+      return _this.currentToLocation = _this.initDragPoint(sm_coords, "#to");
     });
     if (navigator.geolocation) {
       (function() {
@@ -82,9 +90,9 @@ window.IndexView = Backbone.View.extend({
   },
   updateFrom: function(event) {
     this.updatePosition(event.currentTarget.value, "#from", this.currentFromLocation);
+    console.log(event.currentTarget.value);
   },
   updateTo: function(event) {
-    console.log("moi");
     this.updatePosition(event.currentTarget.value, "#to", this.currentToLocation);
   },
   updatePosition: function(searchAddress, targetTextBox, targetDragVector) {

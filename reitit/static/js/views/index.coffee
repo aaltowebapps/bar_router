@@ -39,13 +39,13 @@ window.IndexView = Backbone.View.extend
             else
                 $("#to").val "#{data.name}, #{data.city}"
             
-#            pos = data.coords.split(",")
-#            wgs_coors =
-#                lon: pos[0]
-#                lat: pos[1]
-#
-#            sm_coords = toSMercator wgs_coords
-#            @currentToLocation = @initDragPoint sm_coords, "#to"
+            pos = data.coords.split(",")
+            wgs_coords =
+                lon: pos[0]
+                lat: pos[1]
+
+            sm_coords = toSMercator wgs_coords
+            @currentToLocation = @initDragPoint sm_coords, "#to"
 
         if navigator.geolocation
             # awesome closures
@@ -79,10 +79,10 @@ window.IndexView = Backbone.View.extend
 
     updateFrom: (event) ->
         @updatePosition event.currentTarget.value, "#from", @currentFromLocation
+        console.log event.currentTarget.value
         return undefined
 
     updateTo: (event) ->
-        console.log "moi"
         @updatePosition event.currentTarget.value, "#to", @currentToLocation
         return undefined
 
