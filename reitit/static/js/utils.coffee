@@ -28,12 +28,16 @@ tpl =
   get: (name) ->
     @templates[name]
 
+printStack = () ->
+    try
+      printStackExceptionTrigger += 10
+    catch error
+      console.debug(error.stack)
 
 getUrlParam = (name) ->
     results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href)
     return undefined unless results
     return decodeURI(results[1])
-
 
 centerMap = (coords) ->
     # Eats s_mercator coordinates
@@ -45,3 +49,9 @@ toSMercator = (coords) ->
 
 toWGS = (coords) ->
     return new OpenLayers.LonLat(coords.lon, coords.lat).transform(app.s_mercator, app.wgs84)
+
+Array.prototype.clean = (deleteValue) ->
+    index = this.indexOf(deleteValue)
+    while index != -1 and this.length > 0
+        this.splice(index, 1)
+    return this

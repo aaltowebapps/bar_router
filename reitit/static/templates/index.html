@@ -1,6 +1,12 @@
 <div id="search"><form id="search">
-    <div><input type="text" id="from" name="from" placeholder="lähtöpaikka"></div>
-    <div><input type="text" id="to" name="to" placeholder="määränpää"></div>
+    <div>
+        <input type="text" id="from" name="from" placeholder="lähtöpaikka">
+        <input type="image" id="favfrom" src="static/favorite-off.png" width="20" height="20" />
+    </div>
+    <div>
+        <input type="text" id="to" name="to" placeholder="määränpää">
+        <input type="image" id="favto" src="static/favorite-off.png" width="20" height="20" />
+    </div>
     <div>   
         <input type="number" name="hour" id="hour" min="0" max="24" value="<%= time.hours %>" />
         <input type="number" name="minute" id="minute" min="0" max="60" value="<%= time.minutes %>" />
