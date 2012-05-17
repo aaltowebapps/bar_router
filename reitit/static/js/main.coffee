@@ -9,10 +9,20 @@ AppRouter = Backbone.Router.extend
         @wgs84 = new OpenLayers.Projection("EPSG:4326")
         @s_mercator = new OpenLayers.Projection("EPSG:900913")
         @vectors = new OpenLayers.Layer.Vector("Vector layer")
+        drag = new OpenLayers.Control.DragFeature @vectors,
+            autoActivate: true
+            onComplete: (event) ->
+                sm_coords =
+                    lon: event.geometry.x
+                    lat: event.geometry.y
+                Reittiopas.reverseLocate toWGS(sm_coords), (data) ->
+                    $(event.id).val data.name
+                    
         @map = new OpenLayers.Map
             theme: null
             controls: [
-                new OpenLayers.Control.Attribution(),
+                drag
+                new OpenLayers.Control.Attribution()
                 new OpenLayers.Control.TouchNavigation
                     dragPanOptions: {enableKinetcs: true }
                 new OpenLayers.Control.Zoom()
@@ -25,6 +35,7 @@ AppRouter = Backbone.Router.extend
             center: new OpenLayers.LonLat(742000, 5861000)
             zoom: 14
 
+        drag.activate()
 
         @located = false
   

@@ -5,7 +5,7 @@ window.IndexView = Backbone.View.extend
         @template = _.template tpl.get('searcher')
 
     initMap: ->
-        app.map.render $("#basicMap")[0]
+        app.map.render $("#basicMap")[0]        
         @resizeMap()
         #TODO remove this on view close
         $(window).on "resize", @resizeMap
@@ -20,8 +20,8 @@ window.IndexView = Backbone.View.extend
         "submit": "submit"
         "change #from": "updateFrom"
         "change #to": "updateTo"
-        "focus #from": "centerMapByFocusedInput"
-        "focus #to": "centerMapByFocusedInput"
+        "focus #from": "centerMapOnFrom"
+        "focus #to": "centerMapOnTo"
         "click #favfrom": "favToggleFrom"
         "click #favto": "favToggleTo"
 
@@ -39,13 +39,13 @@ window.IndexView = Backbone.View.extend
             else
                 $("#to").val "#{data.name}, #{data.city}"
             
-#            pos = data.coords.split(",")
-#            wgs_coors =
-#                lon: pos[0]
-#                lat: pos[1]
-#
-#            sm_coords = toSMercator wgs_coords
-#            @currentToLocation = @initDragPoint sm_coords, "#to"
+            pos = data.coords.split(",")
+            wgs_coords =
+                lon: pos[0]
+                lat: pos[1]
+
+            sm_coords = toSMercator wgs_coords
+            @currentToLocation = @initDragPoint sm_coords, "#to"
 
         if navigator.geolocation
             # awesome closures
@@ -70,19 +70,19 @@ window.IndexView = Backbone.View.extend
         timetype = encodeURI(event.target[4].value)
         app.navigate "/route/?from=#{from}&to=#{to}&time=#{time}&timetype=#{timetype}", true
 
-    centerMapByFocusedInput: (event) ->
-        # ToDo: Too slow... should use the values from @currentFromLocation and @currentToLocation
-        # Not done so at the moment due to the different coordinate systems; how to transform to LonLat?
-        Reittiopas.locate event.currentTarget.value, (data) =>
-            pos = data.coords.split(",")
-            centerMap toSMercator({lon:pos[0], lat:pos[1]})
+    centerMapOnFrom: (event) ->
+        coords = new OpenLayers.LonLat @currentFromLocation.geometry.x, @currentFromLocation.geometry.y
+        centerMap coords
+
+    centerMapOnTo: (event) ->
+        coords = new OpenLayers.LonLat @currentToLocation.geometry.x, @currentToLocation.geometry.y
+        centerMap coords
 
     updateFrom: (event) ->
         @updatePosition event.currentTarget.value, "#from", @currentFromLocation
         return undefined
 
     updateTo: (event) ->
-        console.log "moi"
         @updatePosition event.currentTarget.value, "#to", @currentToLocation
         return undefined
 
@@ -100,7 +100,7 @@ window.IndexView = Backbone.View.extend
 
             sm_coords = toSMercator wgs_coords
 
-#            targetDragVector.move sm_coords
+            targetDragVector.move sm_coords
             console.log sm_coords
             centerMap sm_coords
 
@@ -129,25 +129,16 @@ window.IndexView = Backbone.View.extend
 
     initDragPoint: (location, targetTextBox) ->
         geometryPoint = new OpenLayers.Geometry.Point(location.lon, location.lat)
-        sytle =
+        style =
             fillColor: "#ee0000"
             fillOpacity: 0.4
             strokeColor: "#ff0000"
             pointRadius: 6
 
-        dragpoint = new OpenLayers.Feature.Vector(geometryPoint, null, sytle)
+        dragpoint = new OpenLayers.Feature.Vector(geometryPoint, null, style)
+        dragpoint.id = targetTextBox
         app.vectors.addFeatures [ dragpoint ]
-        drag = new OpenLayers.Control.DragFeature app.vectors,
-            autoActivate: true
-            onComplete: (event) =>
-                sm_coords =
-                    lon: event.geometry.x
-                    lat: event.geometry.y
-                Reittiopas.reverseLocate toWGS(sm_coords), (data) =>
-                    $(targetTextBox).val data.name
         
-        app.map.addControl drag
-        drag.activate()
         return dragpoint
 
     # Handles a favorites toggle for the given direction, "from" or "to"

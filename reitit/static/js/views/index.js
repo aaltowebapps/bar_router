@@ -20,8 +20,8 @@ window.IndexView = Backbone.View.extend({
     "submit": "submit",
     "change #from": "updateFrom",
     "change #to": "updateTo",
-    "focus #from": "centerMapByFocusedInput",
-    "focus #to": "centerMapByFocusedInput",
+    "focus #from": "centerMapOnFrom",
+    "focus #to": "centerMapOnTo",
     "click #favfrom": "favToggleFrom",
     "click #favto": "favToggleTo"
   },
@@ -37,11 +37,19 @@ window.IndexView = Backbone.View.extend({
       time: time
     }));
     Reittiopas.locate("Kamppi", function(data) {
+      var pos, sm_coords, wgs_coords;
       if (data.details.houseNumber) {
-        return $("#to").val("" + data.name + " " + data.details.houseNumber + ", " + data.city);
+        $("#to").val("" + data.name + " " + data.details.houseNumber + ", " + data.city);
       } else {
-        return $("#to").val("" + data.name + ", " + data.city);
+        $("#to").val("" + data.name + ", " + data.city);
       }
+      pos = data.coords.split(",");
+      wgs_coords = {
+        lon: pos[0],
+        lat: pos[1]
+      };
+      sm_coords = toSMercator(wgs_coords);
+      return _this.currentToLocation = _this.initDragPoint(sm_coords, "#to");
     });
     if (navigator.geolocation) {
       (function() {
@@ -69,22 +77,20 @@ window.IndexView = Backbone.View.extend({
     timetype = encodeURI(event.target[4].value);
     return app.navigate("/route/?from=" + from + "&to=" + to + "&time=" + time + "&timetype=" + timetype, true);
   },
-  centerMapByFocusedInput: function(event) {
-    var _this = this;
-    return Reittiopas.locate(event.currentTarget.value, function(data) {
-      var pos;
-      pos = data.coords.split(",");
-      return centerMap(toSMercator({
-        lon: pos[0],
-        lat: pos[1]
-      }));
-    });
+  centerMapOnFrom: function(event) {
+    var coords;
+    coords = new OpenLayers.LonLat(this.currentFromLocation.geometry.x, this.currentFromLocation.geometry.y);
+    return centerMap(coords);
+  },
+  centerMapOnTo: function(event) {
+    var coords;
+    coords = new OpenLayers.LonLat(this.currentToLocation.geometry.x, this.currentToLocation.geometry.y);
+    return centerMap(coords);
   },
   updateFrom: function(event) {
     this.updatePosition(event.currentTarget.value, "#from", this.currentFromLocation);
   },
   updateTo: function(event) {
-    console.log("moi");
     this.updatePosition(event.currentTarget.value, "#to", this.currentToLocation);
   },
   updatePosition: function(searchAddress, targetTextBox, targetDragVector) {
@@ -102,6 +108,7 @@ window.IndexView = Backbone.View.extend({
         lat: pos[1]
       };
       sm_coords = toSMercator(wgs_coords);
+      targetDragVector.move(sm_coords);
       console.log(sm_coords);
       return centerMap(sm_coords);
     });
@@ -129,32 +136,17 @@ window.IndexView = Backbone.View.extend({
     });
   },
   initDragPoint: function(location, targetTextBox) {
-    var drag, dragpoint, geometryPoint, sytle,
-      _this = this;
+    var dragpoint, geometryPoint, style;
     geometryPoint = new OpenLayers.Geometry.Point(location.lon, location.lat);
-    sytle = {
+    style = {
       fillColor: "#ee0000",
       fillOpacity: 0.4,
       strokeColor: "#ff0000",
       pointRadius: 6
     };
-    dragpoint = new OpenLayers.Feature.Vector(geometryPoint, null, sytle);
+    dragpoint = new OpenLayers.Feature.Vector(geometryPoint, null, style);
+    dragpoint.id = targetTextBox;
     app.vectors.addFeatures([dragpoint]);
-    drag = new OpenLayers.Control.DragFeature(app.vectors, {
-      autoActivate: true,
-      onComplete: function(event) {
-        var sm_coords;
-        sm_coords = {
-          lon: event.geometry.x,
-          lat: event.geometry.y
-        };
-        return Reittiopas.reverseLocate(toWGS(sm_coords), function(data) {
-          return $(targetTextBox).val(data.name);
-        });
-      }
-    });
-    app.map.addControl(drag);
-    drag.activate();
     return dragpoint;
   },
   favToggle: function(direction) {
