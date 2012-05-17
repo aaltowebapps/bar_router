@@ -5,7 +5,7 @@ window.IndexView = Backbone.View.extend
         @template = _.template tpl.get('searcher')
 
     initMap: ->
-        app.map.render $("#basicMap")[0]
+        app.map.render $("#basicMap")[0]        
         @resizeMap()
         #TODO remove this on view close
         $(window).on "resize", @resizeMap
@@ -80,7 +80,6 @@ window.IndexView = Backbone.View.extend
 
     updateFrom: (event) ->
         @updatePosition event.currentTarget.value, "#from", @currentFromLocation
-        console.log event.currentTarget.value
         return undefined
 
     updateTo: (event) ->
@@ -101,7 +100,7 @@ window.IndexView = Backbone.View.extend
 
             sm_coords = toSMercator wgs_coords
 
-#            targetDragVector.move sm_coords
+            targetDragVector.move sm_coords
             console.log sm_coords
             centerMap sm_coords
 
@@ -130,25 +129,16 @@ window.IndexView = Backbone.View.extend
 
     initDragPoint: (location, targetTextBox) ->
         geometryPoint = new OpenLayers.Geometry.Point(location.lon, location.lat)
-        sytle =
+        style =
             fillColor: "#ee0000"
             fillOpacity: 0.4
             strokeColor: "#ff0000"
             pointRadius: 6
 
-        dragpoint = new OpenLayers.Feature.Vector(geometryPoint, null, sytle)
+        dragpoint = new OpenLayers.Feature.Vector(geometryPoint, null, style)
+        dragpoint.id = targetTextBox
         app.vectors.addFeatures [ dragpoint ]
-        drag = new OpenLayers.Control.DragFeature app.vectors,
-            autoActivate: true
-            onComplete: (event) =>
-                sm_coords =
-                    lon: event.geometry.x
-                    lat: event.geometry.y
-                Reittiopas.reverseLocate toWGS(sm_coords), (data) =>
-                    $(targetTextBox).val data.name
         
-        app.map.addControl drag
-        drag.activate()
         return dragpoint
 
     # Handles a favorites toggle for the given direction, "from" or "to"

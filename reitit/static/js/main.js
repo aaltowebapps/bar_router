@@ -12,13 +12,27 @@ Backbone.View.prototype.navigateAnchor = function(event) {
 
 AppRouter = Backbone.Router.extend({
   initialize: function() {
+    var drag;
     this.wgs84 = new OpenLayers.Projection("EPSG:4326");
     this.s_mercator = new OpenLayers.Projection("EPSG:900913");
     this.vectors = new OpenLayers.Layer.Vector("Vector layer");
+    drag = new OpenLayers.Control.DragFeature(this.vectors, {
+      autoActivate: true,
+      onComplete: function(event) {
+        var sm_coords;
+        sm_coords = {
+          lon: event.geometry.x,
+          lat: event.geometry.y
+        };
+        return Reittiopas.reverseLocate(toWGS(sm_coords), function(data) {
+          return $(event.id).val(data.name);
+        });
+      }
+    });
     this.map = new OpenLayers.Map({
       theme: null,
       controls: [
-        new OpenLayers.Control.Attribution(), new OpenLayers.Control.TouchNavigation({
+        drag, new OpenLayers.Control.Attribution(), new OpenLayers.Control.TouchNavigation({
           dragPanOptions: {
             enableKinetcs: true
           }
@@ -32,6 +46,7 @@ AppRouter = Backbone.Router.extend({
       center: new OpenLayers.LonLat(742000, 5861000),
       zoom: 14
     });
+    drag.activate();
     this.located = false;
     if (!debug) {
       $("head").append("<style type='text/css'>" + collated_stylesheets + "</style>");

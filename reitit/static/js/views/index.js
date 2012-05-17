@@ -89,7 +89,6 @@ window.IndexView = Backbone.View.extend({
   },
   updateFrom: function(event) {
     this.updatePosition(event.currentTarget.value, "#from", this.currentFromLocation);
-    console.log(event.currentTarget.value);
   },
   updateTo: function(event) {
     this.updatePosition(event.currentTarget.value, "#to", this.currentToLocation);
@@ -109,6 +108,7 @@ window.IndexView = Backbone.View.extend({
         lat: pos[1]
       };
       sm_coords = toSMercator(wgs_coords);
+      targetDragVector.move(sm_coords);
       console.log(sm_coords);
       return centerMap(sm_coords);
     });
@@ -136,32 +136,17 @@ window.IndexView = Backbone.View.extend({
     });
   },
   initDragPoint: function(location, targetTextBox) {
-    var drag, dragpoint, geometryPoint, sytle,
-      _this = this;
+    var dragpoint, geometryPoint, style;
     geometryPoint = new OpenLayers.Geometry.Point(location.lon, location.lat);
-    sytle = {
+    style = {
       fillColor: "#ee0000",
       fillOpacity: 0.4,
       strokeColor: "#ff0000",
       pointRadius: 6
     };
-    dragpoint = new OpenLayers.Feature.Vector(geometryPoint, null, sytle);
+    dragpoint = new OpenLayers.Feature.Vector(geometryPoint, null, style);
+    dragpoint.id = targetTextBox;
     app.vectors.addFeatures([dragpoint]);
-    drag = new OpenLayers.Control.DragFeature(app.vectors, {
-      autoActivate: true,
-      onComplete: function(event) {
-        var sm_coords;
-        sm_coords = {
-          lon: event.geometry.x,
-          lat: event.geometry.y
-        };
-        return Reittiopas.reverseLocate(toWGS(sm_coords), function(data) {
-          return $(targetTextBox).val(data.name);
-        });
-      }
-    });
-    app.map.addControl(drag);
-    drag.activate();
     return dragpoint;
   },
   favToggle: function(direction) {
