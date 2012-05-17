@@ -20,8 +20,8 @@ window.IndexView = Backbone.View.extend({
     "submit": "submit",
     "change #from": "updateFrom",
     "change #to": "updateTo",
-    "blur #from": "centerMapByFocusedInput",
-    "blur #to": "centerMapByFocusedInput"
+    "focus #from": "centerMapByFocusedInput",
+    "focus #to": "centerMapByFocusedInput"
   },
   render: function() {
     var d, time,
@@ -34,6 +34,13 @@ window.IndexView = Backbone.View.extend({
     $(this.el).html(this.template({
       time: time
     }));
+    Reittiopas.locate("Kamppi", function(data) {
+      if (data.details.houseNumber) {
+        return $("#to").val("" + data.name + " " + data.details.houseNumber + ", " + data.city);
+      } else {
+        return $("#to").val("" + data.name + ", " + data.city);
+      }
+    });
     if (navigator.geolocation) {
       (function() {
         var fail, success;
@@ -62,33 +69,39 @@ window.IndexView = Backbone.View.extend({
   },
   centerMapByFocusedInput: function(event) {
     var _this = this;
-    console.log(event);
     return Reittiopas.locate(event.currentTarget.value, function(data) {
-      var center, pos;
+      var pos;
       pos = data.coords.split(",");
-      center = new OpenLayers.LonLat(pos[0], pos[1]).transform(app.wgs84, app.s_mercator);
-      return centerMap(pos[0], pos[1]);
+      return centerMap(toSMercator({
+        lon: pos[0],
+        lat: pos[1]
+      }));
     });
   },
   updateFrom: function(event) {
     this.updatePosition(event.currentTarget.value, "#from", this.currentFromLocation);
   },
   updateTo: function(event) {
+    console.log("moi");
     this.updatePosition(event.currentTarget.value, "#to", this.currentToLocation);
   },
   updatePosition: function(searchAddress, targetTextBox, targetDragVector) {
     var _this = this;
     Reittiopas.locate(searchAddress, function(data) {
-      var center, pos;
+      var pos, sm_coords, wgs_coords;
       if (data.details.houseNumber) {
         $(targetTextBox).val("" + data.name + " " + data.details.houseNumber + ", " + data.city);
       } else {
         $(targetTextBox).val("" + data.name + ", " + data.city);
       }
       pos = data.coords.split(",");
-      center = new OpenLayers.LonLat(pos[0], pos[1]).transform(app.wgs84, app.s_mercator);
-      targetDragVector.move(center);
-      return centerMap(pos[0], pos[1]);
+      wgs_coords = {
+        lon: pos[0],
+        lat: pos[1]
+      };
+      sm_coords = toSMercator(wgs_coords);
+      console.log(sm_coords);
+      return centerMap(sm_coords);
     });
   },
   geolocate: function(position) {

@@ -20,8 +20,8 @@ window.IndexView = Backbone.View.extend
         "submit": "submit"
         "change #from": "updateFrom"
         "change #to": "updateTo"
-        "blur #from": "centerMapByFocusedInput"
-        "blur #to": "centerMapByFocusedInput"
+        "focus #from": "centerMapByFocusedInput"
+        "focus #to": "centerMapByFocusedInput"
 
     render: ->
         d = new Date()
@@ -31,12 +31,12 @@ window.IndexView = Backbone.View.extend
 
         $(@el).html @template({time:time})
 
-#        Reittiopas.locate "Kamppi", (data) =>
-#            if data.details.houseNumber
-#                $("#to").val "#{data.name} #{data.details.houseNumber}, #{data.city}"
-#            else
-#                $("#to").val "#{data.name}, #{data.city}"
-#            
+        Reittiopas.locate "Kamppi", (data) =>
+            if data.details.houseNumber
+                $("#to").val "#{data.name} #{data.details.houseNumber}, #{data.city}"
+            else
+                $("#to").val "#{data.name}, #{data.city}"
+            
 #            pos = data.coords.split(",")
 #            wgs_coors =
 #                lon: pos[0]
@@ -71,17 +71,16 @@ window.IndexView = Backbone.View.extend
     centerMapByFocusedInput: (event) ->
         # ToDo: Too slow... should use the values from @currentFromLocation and @currentToLocation
         # Not done so at the moment due to the different coordinate systems; how to transform to LonLat?
-        console.log event
         Reittiopas.locate event.currentTarget.value, (data) =>
             pos = data.coords.split(",")
-            center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
-            centerMap(pos[0], pos[1]) 
+            centerMap toSMercator({lon:pos[0], lat:pos[1]})
 
     updateFrom: (event) ->
         @updatePosition event.currentTarget.value, "#from", @currentFromLocation
         return undefined
 
     updateTo: (event) ->
+        console.log "moi"
         @updatePosition event.currentTarget.value, "#to", @currentToLocation
         return undefined
 
@@ -93,9 +92,16 @@ window.IndexView = Backbone.View.extend
                 $(targetTextBox).val "#{data.name}, #{data.city}"
             
             pos = data.coords.split(",")
-            center = new OpenLayers.LonLat(pos[0],pos[1]).transform(app.wgs84, app.s_mercator)
-            targetDragVector.move(center)
-            centerMap(pos[0], pos[1])
+            wgs_coords =
+                lon: pos[0]
+                lat: pos[1]
+
+            sm_coords = toSMercator wgs_coords
+
+#            targetDragVector.move sm_coords
+            console.log sm_coords
+            centerMap sm_coords
+
         return undefined
 
     geolocate: (position) ->
