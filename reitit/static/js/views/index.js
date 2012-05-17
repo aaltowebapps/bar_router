@@ -20,8 +20,8 @@ window.IndexView = Backbone.View.extend({
     "submit": "submit",
     "change #from": "updateFrom",
     "change #to": "updateTo",
-    "focus #from": "centerMapByFocusedInput",
-    "focus #to": "centerMapByFocusedInput",
+    "focus #from": "centerMapOnFrom",
+    "focus #to": "centerMapOnTo",
     "click #favfrom": "favToggleFrom",
     "click #favto": "favToggleTo"
   },
@@ -77,16 +77,15 @@ window.IndexView = Backbone.View.extend({
     timetype = encodeURI(event.target[4].value);
     return app.navigate("/route/?from=" + from + "&to=" + to + "&time=" + time + "&timetype=" + timetype, true);
   },
-  centerMapByFocusedInput: function(event) {
-    var _this = this;
-    return Reittiopas.locate(event.currentTarget.value, function(data) {
-      var pos;
-      pos = data.coords.split(",");
-      return centerMap(toSMercator({
-        lon: pos[0],
-        lat: pos[1]
-      }));
-    });
+  centerMapOnFrom: function(event) {
+    var coords;
+    coords = new OpenLayers.LonLat(this.currentFromLocation.geometry.x, this.currentFromLocation.geometry.y);
+    return centerMap(coords);
+  },
+  centerMapOnTo: function(event) {
+    var coords;
+    coords = new OpenLayers.LonLat(this.currentToLocation.geometry.x, this.currentToLocation.geometry.y);
+    return centerMap(coords);
   },
   updateFrom: function(event) {
     this.updatePosition(event.currentTarget.value, "#from", this.currentFromLocation);

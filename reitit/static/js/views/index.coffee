@@ -20,8 +20,8 @@ window.IndexView = Backbone.View.extend
         "submit": "submit"
         "change #from": "updateFrom"
         "change #to": "updateTo"
-        "focus #from": "centerMapByFocusedInput"
-        "focus #to": "centerMapByFocusedInput"
+        "focus #from": "centerMapOnFrom"
+        "focus #to": "centerMapOnTo"
         "click #favfrom": "favToggleFrom"
         "click #favto": "favToggleTo"
 
@@ -70,12 +70,13 @@ window.IndexView = Backbone.View.extend
         timetype = encodeURI(event.target[4].value)
         app.navigate "/route/?from=#{from}&to=#{to}&time=#{time}&timetype=#{timetype}", true
 
-    centerMapByFocusedInput: (event) ->
-        # ToDo: Too slow... should use the values from @currentFromLocation and @currentToLocation
-        # Not done so at the moment due to the different coordinate systems; how to transform to LonLat?
-        Reittiopas.locate event.currentTarget.value, (data) =>
-            pos = data.coords.split(",")
-            centerMap toSMercator({lon:pos[0], lat:pos[1]})
+    centerMapOnFrom: (event) ->
+        coords = new OpenLayers.LonLat @currentFromLocation.geometry.x, @currentFromLocation.geometry.y
+        centerMap coords
+
+    centerMapOnTo: (event) ->
+        coords = new OpenLayers.LonLat @currentToLocation.geometry.x, @currentToLocation.geometry.y
+        centerMap coords
 
     updateFrom: (event) ->
         @updatePosition event.currentTarget.value, "#from", @currentFromLocation
