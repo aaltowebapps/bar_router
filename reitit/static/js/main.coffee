@@ -52,12 +52,16 @@ AppRouter = Backbone.Router.extend
     routes:
         "": "index"
         "route/*splat": "results"
+        "input/*splat": "input"
 
     index: ->
         @changePage(new IndexView())
 
     results: ->
         @changePage(new ResultsView())
+        
+    input: ->
+        @changePage(new InputView())
 
 #    resultmap: (model) ->
 #        @changePage(new ResultMapView(model: model))
@@ -79,8 +83,7 @@ AppRouter = Backbone.Router.extend
         
         page.initMap() if page.initMap
 
-
-tpl.loadTemplates [ "searcher", "results", "result-item" ], ->
+tpl.loadTemplates [ "searcher", "results", "result-item", "input" ], ->
     routes = AppRouter::routes
     for route, action of routes
         routes[route + "/"] = action

@@ -41,6 +41,7 @@ getUrlParam = (name) ->
 
 centerMap = (coords) ->
     # Eats s_mercator coordinates
+    console.debug "Centering on " + coords
     app.map.setCenter coords, 14
     app.located = true
 

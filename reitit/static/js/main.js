@@ -59,13 +59,17 @@ AppRouter = Backbone.Router.extend({
   },
   routes: {
     "": "index",
-    "route/*splat": "results"
+    "route/*splat": "results",
+    "input/*splat": "input"
   },
   index: function() {
     return this.changePage(new IndexView());
   },
   results: function() {
     return this.changePage(new ResultsView());
+  },
+  input: function() {
+    return this.changePage(new InputView());
   },
   changePage: function(page) {
     var transition;
@@ -88,7 +92,11 @@ AppRouter = Backbone.Router.extend({
   }
 });
 
+<<<<<<< Updated upstream
 tpl.loadTemplates(["searcher", "results", "result-item"], function() {
+=======
+tpl.loadTemplates(["searcher", "result", "input"], function() {
+>>>>>>> Stashed changes
   var action, route, routes;
   routes = AppRouter.prototype.routes;
   for (route in routes) {

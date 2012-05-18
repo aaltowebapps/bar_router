@@ -7,7 +7,7 @@ import requests
 import json
 
 def index(request):
-        return render_to_response("index.html", {}, context_instance=RequestContext(request))
+        return render_to_response("index.html", dict(debug=True), context_instance=RequestContext(request))
 
 def queryHandler(request):
     if request.method != "GET":

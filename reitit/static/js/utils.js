@@ -48,6 +48,7 @@ getUrlParam = function(name) {
 };
 
 centerMap = function(coords) {
+  console.debug("Centering on " + coords);
   app.map.setCenter(coords, 14);
   return app.located = true;
 };

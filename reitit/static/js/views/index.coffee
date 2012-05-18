@@ -20,8 +20,8 @@ window.IndexView = Backbone.View.extend
         "submit": "submit"
         "change #from": "updateFrom"
         "change #to": "updateTo"
-        "focus #from": "centerMapOnFrom"
-        "focus #to": "centerMapOnTo"
+        "focus #from": "onFocusedFrom"
+        "focus #to": "onFocusedTo"
         "click #favfrom": "favToggleFrom"
         "click #favto": "favToggleTo"
 
@@ -70,11 +70,13 @@ window.IndexView = Backbone.View.extend
         timetype = encodeURI(event.target[4].value)
         app.navigate "/route/?from=#{from}&to=#{to}&time=#{time}&timetype=#{timetype}", true
 
-    centerMapOnFrom: (event) ->
+    onFocusedFrom: (event) ->
         coords = new OpenLayers.LonLat @currentFromLocation.geometry.x, @currentFromLocation.geometry.y
         centerMap coords
+        from = encodeURI(event.currentTarget.value)
+        app.navigate "/input/?value=#{from}", true
 
-    centerMapOnTo: (event) ->
+    onFocusedTo: (event) ->
         coords = new OpenLayers.LonLat @currentToLocation.geometry.x, @currentToLocation.geometry.y
         centerMap coords
 

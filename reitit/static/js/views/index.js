@@ -20,8 +20,8 @@ window.IndexView = Backbone.View.extend({
     "submit": "submit",
     "change #from": "updateFrom",
     "change #to": "updateTo",
-    "focus #from": "centerMapOnFrom",
-    "focus #to": "centerMapOnTo",
+    "focus #from": "onFocusedFrom",
+    "focus #to": "onFocusedTo",
     "click #favfrom": "favToggleFrom",
     "click #favto": "favToggleTo"
   },
@@ -77,12 +77,14 @@ window.IndexView = Backbone.View.extend({
     timetype = encodeURI(event.target[4].value);
     return app.navigate("/route/?from=" + from + "&to=" + to + "&time=" + time + "&timetype=" + timetype, true);
   },
-  centerMapOnFrom: function(event) {
-    var coords;
+  onFocusedFrom: function(event) {
+    var coords, from;
     coords = new OpenLayers.LonLat(this.currentFromLocation.geometry.x, this.currentFromLocation.geometry.y);
-    return centerMap(coords);
+    centerMap(coords);
+    from = encodeURI(event.currentTarget.value);
+    return app.navigate("/input/?value=" + from, true);
   },
-  centerMapOnTo: function(event) {
+  onFocusedTo: function(event) {
     var coords;
     coords = new OpenLayers.LonLat(this.currentToLocation.geometry.x, this.currentToLocation.geometry.y);
     return centerMap(coords);
