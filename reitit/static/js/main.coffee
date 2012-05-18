@@ -4,11 +4,18 @@ Backbone.View::navigateAnchor = (event) ->
     event.preventDefault()
     app.navigate(event.currentTarget.getAttribute("href"), {trigger: true})
 
+
+Backbone.View::back = (event) ->
+    app.route.removeAllFeatures()
+    event.preventDefault()
+    window.history.back()
+
 AppRouter = Backbone.Router.extend
     initialize: ->
         @wgs84 = new OpenLayers.Projection("EPSG:4326")
         @s_mercator = new OpenLayers.Projection("EPSG:900913")
         @vectors = new OpenLayers.Layer.Vector("Vector layer")
+        @route = new OpenLayers.Layer.Vector("Route layer")
         drag = new OpenLayers.Control.DragFeature @vectors,
             autoActivate: true
             onComplete: (event) ->
@@ -27,10 +34,12 @@ AppRouter = Backbone.Router.extend
                     dragPanOptions: {enableKinetcs: true }
                 new OpenLayers.Control.Zoom()
                 new OpenLayers.Control.DrawFeature(@vectors, OpenLayers.Handler.Path)
+                new OpenLayers.Control.DrawFeature(@route, OpenLayers.Handler.Path)
             ]
             layers: [
                 new OpenLayers.Layer.OSM("OpenStreetMap", null, {transitionEffect: 'resize'})
                 @vectors
+                @route
             ]
             center: new OpenLayers.LonLat(742000, 5861000)
             zoom: 14
@@ -38,16 +47,14 @@ AppRouter = Backbone.Router.extend
         drag.activate()
 
         @located = false
+        @currentPage = null
   
         # CSS is stuffed in the main app.js built during deployment
         unless debug
             $("head").append "<style type='text/css'>" + collated_stylesheets + "</style>"
         
-        $(".back").on "click", (event) ->
-            window.history.back()
-            return false
-
         @firstPage = true
+        @pages = {}
 
     routes:
         "": "index"
@@ -55,35 +62,56 @@ AppRouter = Backbone.Router.extend
         "input/*splat": "input"
 
     index: ->
-        @changePage(new IndexView())
+        unless @pages.index
+            @pages.index = new IndexView()
+            @insertToDOM @pages.index
+        @changePage @pages.index
 
     results: ->
-        @changePage(new ResultsView())
+        unless @pages.resultsView
+            @pages.resultsView = new ResultsView()
+            @insertToDOM @pages.resultsView
+        @changePage @pages.resultsView
         
     input: ->
         @changePage(new InputView())
 
-#    resultmap: (model) ->
-#        @changePage(new ResultMapView(model: model))
+    resultMap: (model) ->
+        unless @pages.resultMap
+            @pages.resultMap = new ResultMapView(model: model)
+            @insertToDOM @pages.resultMap
+        else
+            @pages.resultMap.model = model
+            @pages.resultMap.showOnMap()
+        @changePage @pages.resultMap
 
-    changePage: (page) ->
+    insertToDOM: (page) ->
         $(page.el).attr "data-role", "page"
         page.render()
         $("body").append $(page.el)
-#        transition = $.mobile.defaultPageTransition
-        transition = "slide"
+
+    changePage: (page) ->
+        transition = $.mobile.defaultPageTransition
         if @firstPage
             transition = "none"
             @firstPage = false
 
-        console.log transition
+        console.log page
+
         $.mobile.changePage $(page.el),
             changeHash: false
             transition: transition
         
         page.initMap() if page.initMap
+       
+#        if @currentPage
+#            console.log @currentPage
+#            @currentPage.beforeClose() if @currentPage.beforeClose
+#            $(@currentPage.el).html ""
+#            @currentPage.undelegateEvents()
+#        @currentPage = page
 
-tpl.loadTemplates [ "searcher", "results", "result-item", "input" ], ->
+tpl.loadTemplates [ "searcher", "results", "result-item", "input", "resultmap" ], ->
     routes = AppRouter::routes
     for route, action of routes
         routes[route + "/"] = action

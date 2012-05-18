@@ -10,12 +10,19 @@ Backbone.View.prototype.navigateAnchor = function(event) {
   });
 };
 
+Backbone.View.prototype.back = function(event) {
+  app.route.removeAllFeatures();
+  event.preventDefault();
+  return window.history.back();
+};
+
 AppRouter = Backbone.Router.extend({
   initialize: function() {
     var drag;
     this.wgs84 = new OpenLayers.Projection("EPSG:4326");
     this.s_mercator = new OpenLayers.Projection("EPSG:900913");
     this.vectors = new OpenLayers.Layer.Vector("Vector layer");
+    this.route = new OpenLayers.Layer.Vector("Route layer");
     drag = new OpenLayers.Control.DragFeature(this.vectors, {
       autoActivate: true,
       onComplete: function(event) {
@@ -36,26 +43,24 @@ AppRouter = Backbone.Router.extend({
           dragPanOptions: {
             enableKinetcs: true
           }
-        }), new OpenLayers.Control.Zoom(), new OpenLayers.Control.DrawFeature(this.vectors, OpenLayers.Handler.Path)
+        }), new OpenLayers.Control.Zoom(), new OpenLayers.Control.DrawFeature(this.vectors, OpenLayers.Handler.Path), new OpenLayers.Control.DrawFeature(this.route, OpenLayers.Handler.Path)
       ],
       layers: [
         new OpenLayers.Layer.OSM("OpenStreetMap", null, {
           transitionEffect: 'resize'
-        }), this.vectors
+        }), this.vectors, this.route
       ],
       center: new OpenLayers.LonLat(742000, 5861000),
       zoom: 14
     });
     drag.activate();
     this.located = false;
+    this.currentPage = null;
     if (!debug) {
       $("head").append("<style type='text/css'>" + collated_stylesheets + "</style>");
     }
-    $(".back").on("click", function(event) {
-      window.history.back();
-      return false;
-    });
-    return this.firstPage = true;
+    this.firstPage = true;
+    return this.pages = {};
   },
   routes: {
     "": "index",
@@ -63,25 +68,47 @@ AppRouter = Backbone.Router.extend({
     "input/*splat": "input"
   },
   index: function() {
-    return this.changePage(new IndexView());
+    if (!this.pages.index) {
+      this.pages.index = new IndexView();
+      this.insertToDOM(this.pages.index);
+    }
+    return this.changePage(this.pages.index);
   },
   results: function() {
-    return this.changePage(new ResultsView());
+    if (!this.pages.resultsView) {
+      this.pages.resultsView = new ResultsView();
+      this.insertToDOM(this.pages.resultsView);
+    }
+    return this.changePage(this.pages.resultsView);
   },
   input: function() {
     return this.changePage(new InputView());
   },
-  changePage: function(page) {
-    var transition;
+  resultMap: function(model) {
+    if (!this.pages.resultMap) {
+      this.pages.resultMap = new ResultMapView({
+        model: model
+      });
+      this.insertToDOM(this.pages.resultMap);
+    } else {
+      this.pages.resultMap.model = model;
+      this.pages.resultMap.showOnMap();
+    }
+    return this.changePage(this.pages.resultMap);
+  },
+  insertToDOM: function(page) {
     $(page.el).attr("data-role", "page");
     page.render();
-    $("body").append($(page.el));
-    transition = "slide";
+    return $("body").append($(page.el));
+  },
+  changePage: function(page) {
+    var transition;
+    transition = $.mobile.defaultPageTransition;
     if (this.firstPage) {
       transition = "none";
       this.firstPage = false;
     }
-    console.log(transition);
+    console.log(page);
     $.mobile.changePage($(page.el), {
       changeHash: false,
       transition: transition
@@ -92,7 +119,7 @@ AppRouter = Backbone.Router.extend({
   }
 });
 
-tpl.loadTemplates(["searcher", "results", "result-item", "input"], function() {
+tpl.loadTemplates(["searcher", "results", "result-item", "input", "resultmap"], function() {
   var action, route, routes;
   routes = AppRouter.prototype.routes;
   for (route in routes) {
