@@ -31,6 +31,8 @@ Reittiopas = {
   },
   route: function(data, callback) {
     data.request = "route";
+    data.detail = "full";
+    data.show = 5;
     return $.ajax({
       method: "GET",
       url: "/api/query/",

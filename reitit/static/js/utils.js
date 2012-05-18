@@ -47,8 +47,11 @@ getUrlParam = function(name) {
   return decodeURI(results[1]);
 };
 
-centerMap = function(coords) {
-  app.map.setCenter(coords, 14);
+centerMap = function(coords, zoom) {
+  if (!zoom) {
+    zoom = 14;
+  }
+  app.map.setCenter(coords, zoom);
   return app.located = true;
 };
 

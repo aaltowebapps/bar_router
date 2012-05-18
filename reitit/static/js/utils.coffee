@@ -39,10 +39,11 @@ getUrlParam = (name) ->
     return undefined unless results
     return decodeURI(results[1])
 
-centerMap = (coords) ->
+centerMap = (coords, zoom) ->
     # Eats s_mercator coordinates
     # console.debug "Centering on " + coords
-    app.map.setCenter coords, 14
+    zoom = 14 if not zoom
+    app.map.setCenter coords, zoom
     app.located = true
 
 toSMercator = (coords) ->

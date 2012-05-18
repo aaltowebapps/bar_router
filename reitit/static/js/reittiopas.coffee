@@ -25,6 +25,8 @@ Reittiopas =
 
     route: (data, callback) ->
         data.request = "route"
+        data.detail = "full"
+        data.show = 5
         $.ajax
             method: "GET"
             url: "/api/query/"

@@ -14,45 +14,60 @@ window.ResultsView = Backbone.View.extend({
       this.params.time = time;
     }
     if (timetype) {
-      this.params.timetype = timetype;
+      return this.params.timetype = timetype;
     }
-    return this.model = void 0;
+  },
+  events: {
+    "click .back": "back"
+  },
+  beforeClose: function() {
+    return window.ResultsView.prototype.model = this.model;
   },
   render: function() {
     var _this = this;
     $(this.el).html(this.template());
-    console.log($(this.el).find("#routelist"));
-    Reittiopas.route(this.params, function(results) {
-      _this.model = results;
-      _.each(results, function(result, index) {
-        var item;
-        item = new ResultsViewItem({
-          model: result[0],
-          index: index
-        }).render().el;
-        return $(_this.el).find("#routelist").append(item);
+    if (!this.model) {
+      $(this.el).find("#loader").css("display", "block");
+      Reittiopas.route(this.params, function(results) {
+        _this.model = results;
+        $(_this.el).find("#loader").hide();
+        return _this.generateList();
       });
-      return $(_this.el).find("#routelist").listview('refresh');
-    });
+    } else {
+      this.generateList();
+    }
     return this;
+  },
+  generateList: function() {
+    var routelist,
+      _this = this;
+    routelist = $(this.el).find("#routelist");
+    _.each(this.model, function(result) {
+      var item;
+      item = new ResultsViewItem({
+        model: result[0]
+      }).render().el;
+      return routelist.append(item);
+    });
+    return routelist.listview('refresh');
   }
 });
 
 window.ResultsViewItem = Backbone.View.extend({
   tagName: "li",
   events: {
-    "click a": "ping"
+    "click a": "showRoute"
   },
-  ping: function() {
-    return console.log(this.model);
+  showRoute: function() {
+    app.navigate("#showRoute");
+    return app.resultMap(this.model);
   },
   initialize: function() {
     return this.template = _.template(tpl.get('result-item'));
   },
   render: function() {
     $(this.el).html(this.template({
-      route: this.model,
-      index: this.options.index
+      route: this.model
     }));
     return this;
   }

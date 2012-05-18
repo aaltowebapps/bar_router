@@ -45,6 +45,7 @@
             <script src="{% get_static_prefix %}js/views/index.js"></script>
             <script src="{% get_static_prefix %}js/views/resultlist.js"></script>
             <script src="{% get_static_prefix %}js/views/input.js"></script>
+            <script src="{% get_static_prefix %}js/views/resultmap.js"></script>
 
             <script src="{% get_static_prefix %}js/favorites.js"></script>
             <script src="{% get_static_prefix %}js/models.js"></script>
@@ -59,5 +60,7 @@
         {#% endif %#}
     </head>
 
-    <body></body>
+    <body>
+        <div data-role="page" id="currentPage"></div>
+    </body>
 </html> 

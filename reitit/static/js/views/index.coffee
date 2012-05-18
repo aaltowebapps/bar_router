@@ -1,11 +1,10 @@
 window.IndexView = Backbone.View.extend
-#    el: $("#content")
 
     initialize: ->
         @template = _.template tpl.get('searcher')
 
     initMap: ->
-        app.map.render $("#basicMap")[0]        
+        app.map.render $("#basicMap")[0]
         @resizeMap()
         #TODO remove this on view close
         $(window).on "resize", @resizeMap
