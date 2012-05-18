@@ -1,5 +1,6 @@
 window.InputView = Backbone.View.extend
     events:
+        "click .back": "back"
         "submit": "submit"
         "change #input": "onInputChanged"
         "click #favicon": "onFavIconClick"
@@ -22,13 +23,14 @@ window.InputView = Backbone.View.extend
     
     submit: (event) ->
         event.preventDefault()
+        alert("How to get the data back to the other page?")
         return undefined
         
     addOne: (item) ->
         address = item.get "address"
         if address != undefined and address != ""
             item = new FavoriteItemView({model: item}).render().el
-            $(@el).find("#favlist").append item
+            @favlist.append item # Why does jQuery not style the appended item?
             @refreshListView()
             
         return undefined
@@ -44,6 +46,7 @@ window.InputView = Backbone.View.extend
         @addAll()
         
     onInputChanged: (event) ->
+        window.InputView::address = $(@el).find("#input")[0].value
         inputValue = $(@el).find("#input")[0].value
         favIcon = $(@el).find("#favicon")[0]
         matches = @favorites.byAddress inputValue
@@ -83,7 +86,6 @@ window.FavoriteItemView = Backbone.View.extend
     tagname: "li"
 
     initialize: ->
-        @model.bind('change', @render, @)
         @template = _.template tpl.get('favorite-item')
        
     render: ->

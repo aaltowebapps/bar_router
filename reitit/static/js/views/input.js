@@ -2,6 +2,7 @@
 
 window.InputView = Backbone.View.extend({
   events: {
+    "click .back": "back",
     "submit": "submit",
     "change #input": "onInputChanged",
     "click #favicon": "onFavIconClick",
@@ -27,6 +28,7 @@ window.InputView = Backbone.View.extend({
   },
   submit: function(event) {
     event.preventDefault();
+    alert("How to get the data back to the other page?");
   },
   addOne: function(item) {
     var address;
@@ -35,7 +37,7 @@ window.InputView = Backbone.View.extend({
       item = new FavoriteItemView({
         model: item
       }).render().el;
-      $(this.el).find("#favlist").append(item);
+      this.favlist.append(item);
       this.refreshListView();
     }
   },
@@ -51,6 +53,7 @@ window.InputView = Backbone.View.extend({
   },
   onInputChanged: function(event) {
     var favIcon, inputValue, matches;
+    window.InputView.prototype.address = $(this.el).find("#input")[0].value;
     inputValue = $(this.el).find("#input")[0].value;
     favIcon = $(this.el).find("#favicon")[0];
     matches = this.favorites.byAddress(inputValue);
@@ -99,7 +102,6 @@ window.InputView = Backbone.View.extend({
 window.FavoriteItemView = Backbone.View.extend({
   tagname: "li",
   initialize: function() {
-    this.model.bind('change', this.render, this);
     return this.template = _.template(tpl.get('favorite-item'));
   },
   render: function() {

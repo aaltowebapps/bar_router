@@ -102,7 +102,6 @@ AppRouter = Backbone.Router.extend
             transition = "none"
             @firstPage = false
 
-
         $.mobile.changePage $(page.el),
             changeHash: false
             transition: transition
