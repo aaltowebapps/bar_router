@@ -92,11 +92,7 @@ AppRouter = Backbone.Router.extend({
   }
 });
 
-<<<<<<< Updated upstream
-tpl.loadTemplates(["searcher", "results", "result-item"], function() {
-=======
-tpl.loadTemplates(["searcher", "result", "input"], function() {
->>>>>>> Stashed changes
+tpl.loadTemplates(["searcher", "results", "result-item", "input"], function() {
   var action, route, routes;
   routes = AppRouter.prototype.routes;
   for (route in routes) {

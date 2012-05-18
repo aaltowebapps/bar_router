@@ -66,15 +66,14 @@ window.IndexView = Backbone.View.extend
         from = encodeURI(event.target[0].value)
         to = encodeURI(event.target[1].value)
         time = encodeURI(event.target[2].value + event.target[3].value)
-        console.log(event.target[4].value)
         timetype = encodeURI(event.target[4].value)
         app.navigate "/route/?from=#{from}&to=#{to}&time=#{time}&timetype=#{timetype}", true
 
     onFocusedFrom: (event) ->
         coords = new OpenLayers.LonLat @currentFromLocation.geometry.x, @currentFromLocation.geometry.y
         centerMap coords
-        from = encodeURI(event.currentTarget.value)
-        app.navigate "/input/?value=#{from}", true
+#        from = encodeURI(event.currentTarget.value)
+#        app.navigate "/input/?value=#{from}", true
 
     onFocusedTo: (event) ->
         coords = new OpenLayers.LonLat @currentToLocation.geometry.x, @currentToLocation.geometry.y
@@ -103,7 +102,6 @@ window.IndexView = Backbone.View.extend
             sm_coords = toSMercator wgs_coords
 
             targetDragVector.move sm_coords
-            console.log sm_coords
             centerMap sm_coords
 
         return undefined

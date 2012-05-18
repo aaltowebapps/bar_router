@@ -73,16 +73,13 @@ window.IndexView = Backbone.View.extend({
     from = encodeURI(event.target[0].value);
     to = encodeURI(event.target[1].value);
     time = encodeURI(event.target[2].value + event.target[3].value);
-    console.log(event.target[4].value);
     timetype = encodeURI(event.target[4].value);
     return app.navigate("/route/?from=" + from + "&to=" + to + "&time=" + time + "&timetype=" + timetype, true);
   },
   onFocusedFrom: function(event) {
-    var coords, from;
+    var coords;
     coords = new OpenLayers.LonLat(this.currentFromLocation.geometry.x, this.currentFromLocation.geometry.y);
-    centerMap(coords);
-    from = encodeURI(event.currentTarget.value);
-    return app.navigate("/input/?value=" + from, true);
+    return centerMap(coords);
   },
   onFocusedTo: function(event) {
     var coords;
@@ -111,7 +108,6 @@ window.IndexView = Backbone.View.extend({
       };
       sm_coords = toSMercator(wgs_coords);
       targetDragVector.move(sm_coords);
-      console.log(sm_coords);
       return centerMap(sm_coords);
     });
   },
