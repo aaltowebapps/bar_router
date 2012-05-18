@@ -83,7 +83,7 @@ AppRouter = Backbone.Router.extend
         
         page.initMap() if page.initMap
 
-tpl.loadTemplates [ "searcher", "results", "result-item", "input" ], ->
+tpl.loadTemplates [ "searcher", "results", "result-item", "input", "favorite-item" ], ->
     routes = AppRouter::routes
     for route, action of routes
         routes[route + "/"] = action

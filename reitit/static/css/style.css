@@ -100,3 +100,11 @@ div.olControlZoom a:hover {
   -moz-transition: opacity 0.2s linear;
   -o-transition: opacity 0.2s linear;
   transition: opacity 0.2s linear; }
+  
+form img {
+  float: right;
+  margin-top: 1px;
+  margin-right: 6px;
+  padding: 5px 3px;
+  /*border: dashed 1px;*/
+}

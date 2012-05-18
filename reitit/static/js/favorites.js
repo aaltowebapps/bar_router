@@ -17,6 +17,14 @@ Favorite = (function(_super) {
     address: ''
   };
 
+  Favorite.prototype.initialize = function() {
+    if (!this.get('content')) {
+      return this.set({
+        "content": this.defaults.content
+      });
+    }
+  };
+
   return Favorite;
 
 })(Backbone.Model);
@@ -35,8 +43,18 @@ Favorites = (function(_super) {
 
   Favorites.prototype.localStorage = new Store('favoritesdb');
 
+  Favorites.prototype.clear = function() {
+    return _.each(this.models.slice(0)(function(item) {
+      return item.destroy();
+    }));
+  };
+
   Favorites.prototype.contains = function(item) {
     return this.indexOf(item) !== -1;
+  };
+
+  Favorites.prototype.comparator = function(item) {
+    return item.get("address");
   };
 
   return Favorites;

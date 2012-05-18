@@ -92,7 +92,7 @@ AppRouter = Backbone.Router.extend({
   }
 });
 
-tpl.loadTemplates(["searcher", "results", "result-item", "input"], function() {
+tpl.loadTemplates(["searcher", "results", "result-item", "input", "favorite-item"], function() {
   var action, route, routes;
   routes = AppRouter.prototype.routes;
   for (route in routes) {

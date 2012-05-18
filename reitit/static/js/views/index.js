@@ -77,9 +77,12 @@ window.IndexView = Backbone.View.extend({
     return app.navigate("/route/?from=" + from + "&to=" + to + "&time=" + time + "&timetype=" + timetype, true);
   },
   onFocusedFrom: function(event) {
-    var coords;
+    var coords, from;
     coords = new OpenLayers.LonLat(this.currentFromLocation.geometry.x, this.currentFromLocation.geometry.y);
-    return centerMap(coords);
+    centerMap(coords);
+    from = encodeURI(event.currentTarget.value);
+    console.debug("navigating");
+    return app.navigate("/input/?value=" + from, true);
   },
   onFocusedTo: function(event) {
     var coords;

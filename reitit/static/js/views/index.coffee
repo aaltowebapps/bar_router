@@ -72,8 +72,9 @@ window.IndexView = Backbone.View.extend
     onFocusedFrom: (event) ->
         coords = new OpenLayers.LonLat @currentFromLocation.geometry.x, @currentFromLocation.geometry.y
         centerMap coords
-#        from = encodeURI(event.currentTarget.value)
-#        app.navigate "/input/?value=#{from}", true
+        from = encodeURI(event.currentTarget.value)
+        console.debug "navigating"
+        app.navigate "/input/?value=#{from}", true
 
     onFocusedTo: (event) ->
         coords = new OpenLayers.LonLat @currentToLocation.geometry.x, @currentToLocation.geometry.y
