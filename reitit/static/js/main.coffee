@@ -67,10 +67,12 @@ AppRouter = Backbone.Router.extend
             @insertToDOM @pages.index
         @changePage @pages.index
 
-    results: ->
+    results: (update) ->
         unless @pages.resultsView
             @pages.resultsView = new ResultsView()
             @insertToDOM @pages.resultsView
+        else if update
+            @pages.resultsView.updateModel()
         @changePage @pages.resultsView
         
     input: ->
@@ -95,25 +97,19 @@ AppRouter = Backbone.Router.extend
 
     changePage: (page) ->
         transition = $.mobile.defaultPageTransition
-        if @firstPage
+        transition = "slide"
+        if @firstPage or $.browser.opera
             transition = "none"
             @firstPage = false
 
-        console.log page
 
         $.mobile.changePage $(page.el),
             changeHash: false
             transition: transition
         
         page.initMap() if page.initMap
+        page.resizeMap() if page.resizeMap
        
-#        if @currentPage
-#            console.log @currentPage
-#            @currentPage.beforeClose() if @currentPage.beforeClose
-#            $(@currentPage.el).html ""
-#            @currentPage.undelegateEvents()
-#        @currentPage = page
-
 tpl.loadTemplates [ "searcher", "results", "result-item", "input", "favorite-item", "resultmap" ], ->
     routes = AppRouter::routes
     for route, action of routes

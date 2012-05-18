@@ -2,16 +2,17 @@ window.IndexView = Backbone.View.extend
 
     initialize: ->
         @template = _.template tpl.get('searcher')
+        res = (event) =>
+            @resizeMap(event)
+        $(window).on "resize", res
 
     initMap: ->
         app.map.render $("#basicMap")[0]
-        @resizeMap()
-        #TODO remove this on view close
-        $(window).on "resize", @resizeMap
         
-    resizeMap: ->
-        h = $(window).height() - $("#header h1").height() - $("#content").height() - 55
-        h = Math.max(h, 120)
+    resizeMap: (event) ->
+        unless @neededSpace
+            @neededSpace = $(@el).find(".header h1").height() + $(@el).find(".content").height() + 55
+        h = Math.max($(window).height() - @neededSpace, 120)
         $("#basicMap").height(h + "px")
         app.map.updateSize()
 
@@ -66,7 +67,8 @@ window.IndexView = Backbone.View.extend
         to = encodeURI(event.target[1].value)
         time = encodeURI(event.target[2].value + event.target[3].value)
         timetype = encodeURI(event.target[4].value)
-        app.navigate "/route/?from=#{from}&to=#{to}&time=#{time}&timetype=#{timetype}", true
+        app.navigate "/route/?from=#{from}&to=#{to}&time=#{time}&timetype=#{timetype}"
+        app.results(true)
 
     onFocusedFrom: (event) ->
         coords = new OpenLayers.LonLat @currentFromLocation.geometry.x, @currentFromLocation.geometry.y

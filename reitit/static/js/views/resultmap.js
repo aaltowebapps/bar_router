@@ -2,17 +2,23 @@
 
 window.ResultMapView = Backbone.View.extend({
   initialize: function() {
-    return this.template = _.template(tpl.get('resultmap'));
+    var res,
+      _this = this;
+    this.template = _.template(tpl.get('resultmap'));
+    res = function(event) {
+      return _this.resizeMap(event);
+    };
+    return $(window).on("resize", res);
   },
   initMap: function() {
-    app.map.render($("#resultMap")[0]);
-    $(window).on("resize", this.resizeMap);
-    return this.resizeMap();
+    return app.map.render($("#resultMap")[0]);
   },
-  resizeMap: function() {
+  resizeMap: function(event) {
     var h;
-    h = $(window).height() - $("#header h1").height() - $("#content").height() - 55;
-    h = Math.max(h, 120);
+    if (!this.neededSpace) {
+      this.neededSpace = $(this.el).find(".header h1").height() + $(this.el).find(".content").height() + 55;
+    }
+    h = Math.max($(window).height() - this.neededSpace, 120);
     $("#resultMap").height(h + "px");
     return app.map.updateSize();
   },

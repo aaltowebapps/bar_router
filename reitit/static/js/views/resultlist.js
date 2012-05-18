@@ -2,8 +2,22 @@
 
 window.ResultsView = Backbone.View.extend({
   initialize: function() {
+    return this.template = _.template(tpl.get('results'));
+  },
+  events: {
+    "click .back": "back"
+  },
+  render: function() {
+    $(this.el).html(this.template());
+    if (!this.model) {
+      this.updateModel();
+    } else {
+      this.generateList();
+    }
+    return this;
+  },
+  updateParams: function() {
     var time, timetype;
-    this.template = _.template(tpl.get('results'));
     this.params = {
       from: getUrlParam("from"),
       to: getUrlParam("to")
@@ -17,26 +31,16 @@ window.ResultsView = Backbone.View.extend({
       return this.params.timetype = timetype;
     }
   },
-  events: {
-    "click .back": "back"
-  },
-  beforeClose: function() {
-    return window.ResultsView.prototype.model = this.model;
-  },
-  render: function() {
+  updateModel: function() {
     var _this = this;
-    $(this.el).html(this.template());
-    if (!this.model) {
-      $(this.el).find("#loader").css("display", "block");
-      Reittiopas.route(this.params, function(results) {
-        _this.model = results;
-        $(_this.el).find("#loader").hide();
-        return _this.generateList();
-      });
-    } else {
-      this.generateList();
-    }
-    return this;
+    $(this.el).find("#routelist").html("");
+    $(this.el).find("#loader").css("display", "block");
+    this.updateParams();
+    return Reittiopas.route(this.params, function(results) {
+      _this.model = results;
+      $(_this.el).find("#loader").hide();
+      return _this.generateList();
+    });
   },
   generateList: function() {
     var routelist,

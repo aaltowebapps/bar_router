@@ -2,18 +2,20 @@ window.ResultMapView = Backbone.View.extend
 
     initialize: ->
         @template = _.template tpl.get('resultmap')
+        res = (event) =>
+            @resizeMap(event)
+        $(window).on "resize", res
 
     initMap: ->
         app.map.render $("#resultMap")[0]
-        #TODO remove this on view close
-        $(window).on "resize", @resizeMap
-        @resizeMap()
         
-    resizeMap: ->
-        h = $(window).height() - $("#header h1").height() - $("#content").height() - 55
-        h = Math.max(h, 120)
+    resizeMap: (event) ->
+        unless @neededSpace
+            @neededSpace = $(@el).find(".header h1").height() + $(@el).find(".content").height() + 55
+        h = Math.max($(window).height() - @neededSpace, 120)
         $("#resultMap").height(h + "px")
         app.map.updateSize()
+
 
 
     events:

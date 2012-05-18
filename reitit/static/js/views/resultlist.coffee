@@ -2,6 +2,21 @@ window.ResultsView = Backbone.View.extend
     
     initialize: ->
         @template = _.template tpl.get('results')
+
+    events:
+        "click .back": "back"
+
+
+    render: ->
+        $(@el).html @template()
+        unless @model
+            @updateModel()
+        else
+            @generateList()
+
+        return @
+   
+    updateParams: ->
         @params =
             from: getUrlParam("from")
             to: getUrlParam("to")
@@ -11,25 +26,15 @@ window.ResultsView = Backbone.View.extend
         @params.time = time if time
         @params.timetype = timetype if timetype
 
-    events:
-        "click .back": "back"
 
-    beforeClose: ->
-        window.ResultsView::model = @model
-
-    render: ->
-        $(@el).html @template()
-
-        unless @model
-            $(@el).find("#loader").css("display", "block")
-            Reittiopas.route @params, (results) =>
-                @model = results
-                $(@el).find("#loader").hide()
-                @generateList()
-        else
+    updateModel: ->
+        $(@el).find("#routelist").html ""
+        $(@el).find("#loader").css("display", "block")
+        @updateParams()
+        Reittiopas.route @params, (results) =>
+            @model = results
+            $(@el).find("#loader").hide()
             @generateList()
-
-        return @
 
     generateList: ->
         routelist = $(@el).find("#routelist")

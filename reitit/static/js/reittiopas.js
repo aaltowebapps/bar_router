@@ -24,7 +24,6 @@ Reittiopas = {
         request: "reverse_geocode"
       },
       success: function(data) {
-        console.log(data);
         return callback(data[0]);
       }
     });

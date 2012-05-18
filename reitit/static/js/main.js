@@ -74,10 +74,12 @@ AppRouter = Backbone.Router.extend({
     }
     return this.changePage(this.pages.index);
   },
-  results: function() {
+  results: function(update) {
     if (!this.pages.resultsView) {
       this.pages.resultsView = new ResultsView();
       this.insertToDOM(this.pages.resultsView);
+    } else if (update) {
+      this.pages.resultsView.updateModel();
     }
     return this.changePage(this.pages.resultsView);
   },
@@ -108,17 +110,20 @@ AppRouter = Backbone.Router.extend({
   changePage: function(page) {
     var transition;
     transition = $.mobile.defaultPageTransition;
-    if (this.firstPage) {
+    transition = "slide";
+    if (this.firstPage || $.browser.opera) {
       transition = "none";
       this.firstPage = false;
     }
-    console.log(page);
     $.mobile.changePage($(page.el), {
       changeHash: false,
       transition: transition
     });
     if (page.initMap) {
-      return page.initMap();
+      page.initMap();
+    }
+    if (page.resizeMap) {
+      return page.resizeMap();
     }
   }
 });

@@ -2,17 +2,23 @@
 
 window.IndexView = Backbone.View.extend({
   initialize: function() {
-    return this.template = _.template(tpl.get('searcher'));
+    var res,
+      _this = this;
+    this.template = _.template(tpl.get('searcher'));
+    res = function(event) {
+      return _this.resizeMap(event);
+    };
+    return $(window).on("resize", res);
   },
   initMap: function() {
-    app.map.render($("#basicMap")[0]);
-    this.resizeMap();
-    return $(window).on("resize", this.resizeMap);
+    return app.map.render($("#basicMap")[0]);
   },
-  resizeMap: function() {
+  resizeMap: function(event) {
     var h;
-    h = $(window).height() - $("#header h1").height() - $("#content").height() - 55;
-    h = Math.max(h, 120);
+    if (!this.neededSpace) {
+      this.neededSpace = $(this.el).find(".header h1").height() + $(this.el).find(".content").height() + 55;
+    }
+    h = Math.max($(window).height() - this.neededSpace, 120);
     $("#basicMap").height(h + "px");
     return app.map.updateSize();
   },
@@ -74,7 +80,8 @@ window.IndexView = Backbone.View.extend({
     to = encodeURI(event.target[1].value);
     time = encodeURI(event.target[2].value + event.target[3].value);
     timetype = encodeURI(event.target[4].value);
-    return app.navigate("/route/?from=" + from + "&to=" + to + "&time=" + time + "&timetype=" + timetype, true);
+    app.navigate("/route/?from=" + from + "&to=" + to + "&time=" + time + "&timetype=" + timetype);
+    return app.results(true);
   },
   onFocusedFrom: function(event) {
     var coords, from;

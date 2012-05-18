@@ -1,5 +1,5 @@
 $(document).bind "mobileinit", ->
-    console.log "mobileinit"
+    #    console.log "mobileinit"
     $.mobile.ajaxEnabled = false
     $.mobile.linkBindingEnabled = false
     $.mobile.hashListeningEnabled = false
