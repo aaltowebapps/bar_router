@@ -48,7 +48,7 @@ AppRouter = Backbone.Router.extend({
       layers: [
         new OpenLayers.Layer.OSM("OpenStreetMap", null, {
           transitionEffect: 'resize'
-        }), this.vectors, this.route
+        }), this.route, this.vectors
       ],
       center: new OpenLayers.LonLat(742000, 5861000),
       zoom: 14
