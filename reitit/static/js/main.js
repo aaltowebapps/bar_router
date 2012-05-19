@@ -78,7 +78,7 @@ AppRouter = Backbone.Router.extend({
     if (!this.pages.resultsView) {
       this.pages.resultsView = new ResultsView();
       this.insertToDOM(this.pages.resultsView);
-    } else if (update) {
+    } else if (update === true) {
       this.pages.resultsView.updateModel();
     }
     return this.changePage(this.pages.resultsView);

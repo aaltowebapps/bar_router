@@ -12,13 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         files = [
                 "/static/js/app.js",
-                "/static/south-mini.png",
-                "/static/north-mini.png",
-                "/static/east-mini.png",
-                "/static/west-mini.png",
-                "/static/zoom-world-mini.png",
-                "/static/zoom-plus-mini.png",
-                "/static/zoom-minus-mini.png",
+                "/static/css/responsive.css",
                 ]
 
 

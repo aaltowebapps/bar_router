@@ -47,17 +47,6 @@ input[type=text].ui-input-text {
 .squeeze {
   margin: 0;
   padding: 0; }
-.route {
-  width: 98%;
-  max-width: 320px;
-  height: 2em;
-  line-height: 2em;
-  margin: 0 auto;
-  background-color: white;
-  border: 1px solid black;
-  text-align: center; }
-  .route a {
-    color: black; }
 
 div.olControlZoom {
   position: absolute;

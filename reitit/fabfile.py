@@ -25,7 +25,7 @@ def _config():
     env.install_db = False
     env.install_app = False
     env.install_media = False
-    env.install_static = False
+    env.install_static = True
 
     env.files = []
 
@@ -100,6 +100,7 @@ def _prepare_deploy():
 
         for filu in ("models.js", "utils.js", "main.js", "reittiopas.js"):
             with open(jsdir + filu) as jsfile:
+                local( env.minifier + " " + jsdir + filu + " " + jsdir + filu)
                 if filu == "main.js":
                     main += jsfile.read() + "\n"
                 else:
@@ -107,6 +108,7 @@ def _prepare_deploy():
 
         for filu in os.listdir(jsdir + "views/"):
             if filu.endswith(".js"):
+                local( env.minifier + " " + jsdir +"views/" + filu + " " + jsdir + "views/" + filu)
                 with open(jsdir + "views/" + filu) as jsfile:
                     views += jsfile.read() + "\n"
 
@@ -122,7 +124,7 @@ def _prepare_deploy():
         
         with open(jsdir + "app.js", "w") as out:
             out.write(css + lib + views + app + "tpl.templates = " + json.dumps(templates) + ";\n" + main)
-        local( env.minifier + " " + jsdir + "app.js " + jsdir + "app.js")
+#        local( env.minifier + " " + jsdir + "app.js " + jsdir + "app.js")
 
 
         os.chdir("/tmp/reitit_deploy")
@@ -171,7 +173,7 @@ def _install():
 		run("find ./ -type f -exec sed -i 's/<!--remove//g' {} ';'")
 		run("find ./ -type f -exec sed -i 's/remove-->//g' {} ';'")
     
-#        if env.install_static:
-#            _update_cache()
+        if env.install_static:
+            _update_cache()
 
 	run(appdir + "/apache2/bin/start")

@@ -71,7 +71,7 @@ AppRouter = Backbone.Router.extend
         unless @pages.resultsView
             @pages.resultsView = new ResultsView()
             @insertToDOM @pages.resultsView
-        else if update
+        else if update == true
             @pages.resultsView.updateModel()
         @changePage @pages.resultsView
         

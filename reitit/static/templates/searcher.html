@@ -14,9 +14,9 @@
             <img class="focusIcon" id="toFocus" src="static/zoom.png" width="32" height="32" />
         </div>
 
-        <input class="right tel" type="tel" name="hour" id="hour" maxlength="2" value="<%= time.hours %>" />
+        <input class="right tel" type="tel" name="hour" id="hour" maxlength="2" value="<%= time.hours %>" pattern="(2[0-3])|([0-1]?[0-9])" title="hours" />
         <span style="font-size:1.5em;">:</span>
-            <input class="tel" type="tel" name="minute" id="minute" maxlength="2" value="<%= time.minutes %>" />
+        <input class="tel" type="tel" name="minute" id="minute" maxlength="2" value="<%= time.minutes %>"  pattern="[0-5]?[0-9]" title="minutes" />
             <select name="select-choice-1" name="select-choice-min" id="select-choise-min">
 
                 <option value="departure">Time on departure</option>

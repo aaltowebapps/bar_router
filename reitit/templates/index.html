@@ -7,13 +7,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         
-        <link rel="stylesheet" href="{% get_static_prefix %}css/responsive.css" />
-        {#% if debug %#}<link rel="stylesheet" href="{% get_static_prefix %}css/style.css" />{#% endif %#}
-        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+        {% if debug %}
+        <link rel="stylesheet" href="{% get_static_prefix %}css/style.css" />
+        <link rel="stylesheet" href="{% get_static_prefix %}css/jquery.mobile-1.1.0.min.css" />
+        {% endif %}
+<!--        <link rel="stylesheet" href="{% get_static_prefix %}css/responsive.css" />-->
         
         <link rel="shortcut icon" href="{% get_static_prefix %}favicon.ico" />
-        
-        
 
 <!--        <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -26,7 +26,7 @@
             var static_prefix = '{% get_static_prefix %}';
         </script>
 
-        {#% if debug %#}
+        {% if debug %}
             <script type="text/javascript">
                 var debug = true;
             </script>
@@ -34,13 +34,10 @@
             <script src="{% get_static_prefix %}lib/jquery-1.7.1.min.js"></script>
             <script src="{% get_static_prefix %}lib/jqm-config.js"></script>
             <script src="{% get_static_prefix %}lib/jquery.mobile-1.1.0.min.js"></script>
-            <!--<script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>-->
             <script src="{% get_static_prefix %}lib/underscore-min.js"></script>
             <script src="{% get_static_prefix %}lib/backbone-min.js"></script>
             <script src="{% get_static_prefix %}lib/backbone.localStorage-min.js"></script>
             <script src="{% get_static_prefix %}lib/OpenLayers.mobile.js"></script>
-            <!--<script src="{% get_static_prefix %}lib/OpenLayers.js"></script>-->
-            <!--<script src="http://www.openlayers.org/dev/OpenLayers.mobile.js"></script>-->
 
             <script src="{% get_static_prefix %}js/views/index.js"></script>
             <script src="{% get_static_prefix %}js/views/resultlist.js"></script>
@@ -52,12 +49,12 @@
             <script src="{% get_static_prefix %}js/utils.js"></script>
             <script src="{% get_static_prefix %}js/main.js"></script>
             <script src="{% get_static_prefix %}js/reittiopas.js"></script>
-        {#% else %#}
-<!--            <script type="text/javascript">
+        {% else %}
+            <script type="text/javascript">
                 var debug = false;
             </script>
-            <script src="{% get_static_prefix %}js/app.js"></script>-->
-        {#% endif %#}
+            <script src="{% get_static_prefix %}js/app.js"></script>
+        {% endif %}
     </head>
 
     <body>
