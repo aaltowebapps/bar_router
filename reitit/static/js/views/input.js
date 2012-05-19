@@ -22,9 +22,12 @@ window.InputView = Backbone.View.extend({
       currentInput: inputValue
     }));
     this.favlist = $(this.el).find("#favlist");
-    this.favorites.fetch();
     this.onInputChanged(null);
     return this;
+  },
+  updateListview: function() {
+    this.favorites.fetch();
+    return this.onInputChanged();
   },
   submit: function(event) {
     event.preventDefault();

@@ -105,7 +105,8 @@ AppRouter = Backbone.Router.extend
         $.mobile.changePage $(page.el),
             changeHash: false
             transition: transition
-        
+            
+        page.updateListview() if page.updateListview
         page.initMap() if page.initMap
         page.resizeMap() if page.resizeMap
        

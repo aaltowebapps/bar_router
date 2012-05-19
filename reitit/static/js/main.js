@@ -119,6 +119,9 @@ AppRouter = Backbone.Router.extend({
       changeHash: false,
       transition: transition
     });
+    if (page.updateListview) {
+      page.updateListview();
+    }
     if (page.initMap) {
       page.initMap();
     }

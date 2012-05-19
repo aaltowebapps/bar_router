@@ -17,9 +17,12 @@ window.InputView = Backbone.View.extend
         inputValue = getUrlParam("value")
         $(@el).html @template({ currentInput:inputValue })
         @favlist = $(@el).find("#favlist")
-        @favorites.fetch()
         @onInputChanged(null)
         return @
+    
+    updateListview: ->
+        @favorites.fetch()
+        @onInputChanged()
     
     submit: (event) ->
         event.preventDefault()
