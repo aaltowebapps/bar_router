@@ -28,6 +28,7 @@ window.IndexView = Backbone.View.extend({
   render: function() {
     var d, time,
       _this = this;
+    console.debug(window.InputView.prototype.address);
     d = new Date();
     time = {
       hours: d.getHours(),
@@ -77,17 +78,14 @@ window.IndexView = Backbone.View.extend({
     return app.navigate("/route/?from=" + from + "&to=" + to + "&time=" + time + "&timetype=" + timetype, true);
   },
   onFocusedFrom: function(event) {
-    var coords, from;
-    coords = new OpenLayers.LonLat(this.currentFromLocation.geometry.x, this.currentFromLocation.geometry.y);
-    centerMap(coords);
-    from = encodeURI(event.currentTarget.value);
-    console.debug("navigating");
-    return app.navigate("/input/?value=" + from, true);
+    var target;
+    target = encodeURI(event.currentTarget.value);
+    return app.navigate("/input/?value=" + target, true);
   },
   onFocusedTo: function(event) {
-    var coords;
-    coords = new OpenLayers.LonLat(this.currentToLocation.geometry.x, this.currentToLocation.geometry.y);
-    return centerMap(coords);
+    var target;
+    target = encodeURI(event.currentTarget.value);
+    return app.navigate("/input/?value=" + target, true);
   },
   updateFrom: function(event) {
     this.updatePosition(event.currentTarget.value, "#from", this.currentFromLocation);
