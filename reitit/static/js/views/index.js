@@ -21,7 +21,9 @@ window.IndexView = Backbone.View.extend({
     "change #from": "updateFrom",
     "change #to": "updateTo",
     "focus #from": "onFocusedFrom",
-    "focus #to": "onFocusedTo"
+    "focus #to": "onFocusedTo",
+    "click #fromFocus": "onCenterFrom",
+    "click #toFocus": "onCenterTo"
   },
   render: function() {
     var d, time,
@@ -89,6 +91,16 @@ window.IndexView = Backbone.View.extend({
   },
   updateFrom: function(event) {
     this.updatePosition(event.currentTarget.value, "#from", this.currentFromLocation);
+  },
+  onCenterFrom: function(event) {
+    var coords;
+    coords = new OpenLayers.LonLat(this.currentFromLocation.geometry.x, this.currentFromLocation.geometry.y);
+    return centerMap(coords);
+  },
+  onCenterTo: function(event) {
+    var coords;
+    coords = new OpenLayers.LonLat(this.currentToLocation.geometry.x, this.currentToLocation.geometry.y);
+    return centerMap(coords);
   },
   updateTo: function(event) {
     this.updatePosition(event.currentTarget.value, "#to", this.currentToLocation);

@@ -103,3 +103,9 @@ form img {
   padding: 5px 3px;
   /*border: dashed 1px;*/
 }
+
+.focusIcon {
+    /* Hack to get the focus images in place... */
+    margin-top: -41px;
+    margin-right: 20px; 
+}

@@ -21,6 +21,8 @@ window.IndexView = Backbone.View.extend
         "change #to": "updateTo"
         "focus #from": "onFocusedFrom"
         "focus #to": "onFocusedTo"
+        "click #fromFocus": "onCenterFrom"
+        "click #toFocus": "onCenterTo"
 
     render: ->
         d = new Date()
@@ -80,6 +82,14 @@ window.IndexView = Backbone.View.extend
     updateFrom: (event) ->
         @updatePosition event.currentTarget.value, "#from", @currentFromLocation
         return undefined
+        
+    onCenterFrom: (event) ->
+        coords = new OpenLayers.LonLat @currentFromLocation.geometry.x, @currentFromLocation.geometry.y
+        centerMap coords
+
+    onCenterTo: (event) ->
+        coords = new OpenLayers.LonLat @currentToLocation.geometry.x, @currentToLocation.geometry.y
+        centerMap coords
 
     updateTo: (event) ->
         @updatePosition event.currentTarget.value, "#to", @currentToLocation
