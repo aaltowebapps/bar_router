@@ -9,7 +9,9 @@ window.InputView = Backbone.View.extend({
   initialize: function() {
     this.template = _.template(tpl.get('input'));
     this.favorites = new Favorites();
-    return this.favorites.bind('remove', this.removeOne, this);
+    this.favorites.bind('add', this.addOne, this);
+    this.favorites.bind('remove', this.removeOne, this);
+    return this.favorites.bind('reset', this.addAll, this);
   },
   render: function() {
     var inputValue;
@@ -20,7 +22,6 @@ window.InputView = Backbone.View.extend({
     this.favlist = $(this.el).find("#favlist");
     this.favorites.fetch();
     this.onInputChanged(null);
-    this.addAll();
     return this;
   },
   submit: function(event) {
@@ -37,15 +38,15 @@ window.InputView = Backbone.View.extend({
       this.refreshListView();
     }
   },
-  removeOne: function(item) {
-    this.favlist.empty();
-    return this.addAll();
-  },
   addAll: function() {
     var _this = this;
     _.each(this.favorites.models, function(item, index) {
       return _this.addOne(item);
     });
+  },
+  removeOne: function(item) {
+    this.favlist.empty();
+    return this.addAll();
   },
   onInputChanged: function(event) {
     var favIcon, inputValue, matches;
@@ -75,7 +76,6 @@ window.InputView = Backbone.View.extend({
         fav = this.favorites.create({
           address: address
         });
-        this.addOne(fav);
       }
     } else {
       _.each(this.favorites.byAddress(address), function(fav) {
@@ -104,8 +104,5 @@ window.FavoriteItemView = Backbone.View.extend({
       index: this.options.index
     }));
     return this;
-  },
-  clear: function() {
-    return this.model.destroy();
   }
 });

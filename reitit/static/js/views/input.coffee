@@ -7,7 +7,9 @@ window.InputView = Backbone.View.extend
     initialize: ->
         @template = _.template tpl.get('input')
         @favorites = new Favorites()
+        @favorites.bind('add', @addOne, @)
         @favorites.bind('remove', @removeOne, @)
+        @favorites.bind('reset', @addAll, @)
         
     render: ->
         inputValue = getUrlParam("value")
@@ -15,7 +17,6 @@ window.InputView = Backbone.View.extend
         @favlist = $(@el).find("#favlist")
         @favorites.fetch()
         @onInputChanged(null)
-        @addAll()
         return @
     
     submit: (event) ->
@@ -31,15 +32,15 @@ window.InputView = Backbone.View.extend
             
         return undefined
     
+    addAll: () ->
+        _.each @favorites.models, (item, index) =>
+            @addOne(item)     
+        return undefined
+    
     removeOne: (item) ->
         # Should remove only single elements...
         @favlist.empty()
         @addAll()
-    
-    addAll: () ->
-        _.each @favorites.models, (item, index) =>
-            @addOne(item)            
-        return undefined
         
     onInputChanged: (event) ->
         inputValue = $(@el).find("#input")[0].value
@@ -61,7 +62,6 @@ window.InputView = Backbone.View.extend
         if enabled
             unless @favorites.contains {address:address}
                 fav = @favorites.create {address:address}
-                @addOne fav
         else
             _.each @favorites.byAddress(address), (fav) -> fav.destroy()
         
@@ -74,6 +74,7 @@ window.InputView = Backbone.View.extend
             # Gets called before view is actually rendered...
             console.debug error
 
+
 window.FavoriteItemView = Backbone.View.extend
     tagname: "li"
 
@@ -84,6 +85,3 @@ window.FavoriteItemView = Backbone.View.extend
     render: ->
         $(@el).html @template({address:@model.get("address"), index:@options.index})
         return @
-    
-    clear: ->
-        @model.destroy()
