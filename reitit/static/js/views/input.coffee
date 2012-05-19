@@ -14,7 +14,8 @@ window.InputView = Backbone.View.extend
         @favorites.bind('reset', @addAll, @)
         
     render: ->
-        inputValue = getUrlParam("value")
+        @target = getUrlParam("target")
+        inputValue = window.InputView::[@target]
         $(@el).html @template({ currentInput:inputValue })
         @favlist = $(@el).find("#favlist")
         @onInputChanged(null)
@@ -26,7 +27,8 @@ window.InputView = Backbone.View.extend
     
     submit: (event) ->
         event.preventDefault()
-        alert("How to get the data back to the other page?")
+        window.InputView::[@target] = $(@el).find("#input")[0].value
+        app.navigate "/", true
         return undefined
         
     addOne: (item) ->
@@ -39,6 +41,7 @@ window.InputView = Backbone.View.extend
         return undefined
     
     addAll: () ->
+        @favlist.empty()
         _.each @favorites.models, (item, index) =>
             @addOne(item)     
         return undefined
@@ -49,7 +52,7 @@ window.InputView = Backbone.View.extend
         @addAll()
         
     onInputChanged: (event) ->
-        window.InputView::address = $(@el).find("#input")[0].value
+        window.InputView::[@target] = $(@el).find("#input")[0].value
         inputValue = $(@el).find("#input")[0].value
         favIcon = $(@el).find("#favicon")[0]
         matches = @favorites.byAddress inputValue

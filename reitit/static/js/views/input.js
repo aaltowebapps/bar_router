@@ -17,7 +17,8 @@ window.InputView = Backbone.View.extend({
   },
   render: function() {
     var inputValue;
-    inputValue = getUrlParam("value");
+    this.target = getUrlParam("target");
+    inputValue = window.InputView.prototype[this.target];
     $(this.el).html(this.template({
       currentInput: inputValue
     }));
@@ -31,7 +32,8 @@ window.InputView = Backbone.View.extend({
   },
   submit: function(event) {
     event.preventDefault();
-    alert("How to get the data back to the other page?");
+    window.InputView.prototype[this.target] = $(this.el).find("#input")[0].value;
+    app.navigate("/", true);
   },
   addOne: function(item) {
     var address;
@@ -46,6 +48,7 @@ window.InputView = Backbone.View.extend({
   },
   addAll: function() {
     var _this = this;
+    this.favlist.empty();
     _.each(this.favorites.models, function(item, index) {
       return _this.addOne(item);
     });
@@ -56,7 +59,7 @@ window.InputView = Backbone.View.extend({
   },
   onInputChanged: function(event) {
     var favIcon, inputValue, matches;
-    window.InputView.prototype.address = $(this.el).find("#input")[0].value;
+    window.InputView.prototype[this.target] = $(this.el).find("#input")[0].value;
     inputValue = $(this.el).find("#input")[0].value;
     favIcon = $(this.el).find("#favicon")[0];
     matches = this.favorites.byAddress(inputValue);

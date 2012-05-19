@@ -16,6 +16,17 @@ window.IndexView = Backbone.View.extend
         $("#basicMap").height(h + "px")
         app.map.updateSize()
 
+    updateLocationFields: ->
+        event = currentTarget: value: undefined
+        if window.InputView::from != undefined
+            event.currentTarget.value = window.InputView::from
+            @updateFrom event         
+        else if window.InputView::to != undefined
+            event.currentTarget.value = window.InputView::to
+            @updateTo event
+        window.InputView::from = undefined
+        window.InputView::to = undefined
+
     events:
         "submit": "submit"
         "change #from": "updateFrom"
@@ -26,7 +37,6 @@ window.IndexView = Backbone.View.extend
         "click #toFocus": "onCenterTo"
 
     render: ->
-        console.debug window.InputView::address
         d = new Date()
         time =
             hours: d.getHours()
@@ -72,16 +82,12 @@ window.IndexView = Backbone.View.extend
         app.results(true)
 
     onFocusedFrom: (event) ->
-        target = encodeURI(event.currentTarget.value)
-        app.navigate "/input/?value=#{target}", true
+        window.InputView::from = event.currentTarget.value
+        app.navigate "/input/?target=from", true
 
     onFocusedTo: (event) ->
-        target = encodeURI(event.currentTarget.value)
-        app.navigate "/input/?value=#{target}", true
-
-    updateFrom: (event) ->
-        @updatePosition event.currentTarget.value, "#from", @currentFromLocation
-        return undefined
+        window.InputView::to = event.currentTarget.value
+        app.navigate "/input/?target=to", true
         
     onCenterFrom: (event) ->
         coords = new OpenLayers.LonLat @currentFromLocation.geometry.x, @currentFromLocation.geometry.y
@@ -90,6 +96,10 @@ window.IndexView = Backbone.View.extend
     onCenterTo: (event) ->
         coords = new OpenLayers.LonLat @currentToLocation.geometry.x, @currentToLocation.geometry.y
         centerMap coords
+
+    updateFrom: (event) ->
+        @updatePosition event.currentTarget.value, "#from", @currentFromLocation
+        return undefined
 
     updateTo: (event) ->
         @updatePosition event.currentTarget.value, "#to", @currentToLocation

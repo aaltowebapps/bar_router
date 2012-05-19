@@ -109,6 +109,7 @@ AppRouter = Backbone.Router.extend
         page.updateListview() if page.updateListview
         page.initMap() if page.initMap
         page.resizeMap() if page.resizeMap
+        page.updateLocationFields() if page.updateLocationFields
        
 tpl.loadTemplates [ "searcher", "results", "result-item", "input", "favorite-item", "resultmap" ], ->
     routes = AppRouter::routes

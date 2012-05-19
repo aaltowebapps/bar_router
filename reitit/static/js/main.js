@@ -126,7 +126,10 @@ AppRouter = Backbone.Router.extend({
       page.initMap();
     }
     if (page.resizeMap) {
-      return page.resizeMap();
+      page.resizeMap();
+    }
+    if (page.updateLocationFields) {
+      return page.updateLocationFields();
     }
   }
 });

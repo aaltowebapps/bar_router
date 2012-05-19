@@ -22,6 +22,23 @@ window.IndexView = Backbone.View.extend({
     $("#basicMap").height(h + "px");
     return app.map.updateSize();
   },
+  updateLocationFields: function() {
+    var event;
+    event = {
+      currentTarget: {
+        value: void 0
+      }
+    };
+    if (window.InputView.prototype.from !== void 0) {
+      event.currentTarget.value = window.InputView.prototype.from;
+      this.updateFrom(event);
+    } else if (window.InputView.prototype.to !== void 0) {
+      event.currentTarget.value = window.InputView.prototype.to;
+      this.updateTo(event);
+    }
+    window.InputView.prototype.from = void 0;
+    return window.InputView.prototype.to = void 0;
+  },
   events: {
     "submit": "submit",
     "change #from": "updateFrom",
@@ -34,7 +51,6 @@ window.IndexView = Backbone.View.extend({
   render: function() {
     var d, time,
       _this = this;
-    console.debug(window.InputView.prototype.address);
     d = new Date();
     time = {
       hours: d.getHours(),
@@ -85,17 +101,12 @@ window.IndexView = Backbone.View.extend({
     return app.results(true);
   },
   onFocusedFrom: function(event) {
-    var target;
-    target = encodeURI(event.currentTarget.value);
-    return app.navigate("/input/?value=" + target, true);
+    window.InputView.prototype.from = event.currentTarget.value;
+    return app.navigate("/input/?target=from", true);
   },
   onFocusedTo: function(event) {
-    var target;
-    target = encodeURI(event.currentTarget.value);
-    return app.navigate("/input/?value=" + target, true);
-  },
-  updateFrom: function(event) {
-    this.updatePosition(event.currentTarget.value, "#from", this.currentFromLocation);
+    window.InputView.prototype.to = event.currentTarget.value;
+    return app.navigate("/input/?target=to", true);
   },
   onCenterFrom: function(event) {
     var coords;
@@ -106,6 +117,9 @@ window.IndexView = Backbone.View.extend({
     var coords;
     coords = new OpenLayers.LonLat(this.currentToLocation.geometry.x, this.currentToLocation.geometry.y);
     return centerMap(coords);
+  },
+  updateFrom: function(event) {
+    this.updatePosition(event.currentTarget.value, "#from", this.currentFromLocation);
   },
   updateTo: function(event) {
     this.updatePosition(event.currentTarget.value, "#to", this.currentToLocation);
