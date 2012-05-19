@@ -3,6 +3,7 @@ window.InputView = Backbone.View.extend
         "submit": "submit"
         "change #input": "onInputChanged"
         "click #favicon": "onFavIconClick"
+        "click .favitem": "onFavItemClick"
 
     initialize: ->
         @template = _.template tpl.get('input')
@@ -66,6 +67,9 @@ window.InputView = Backbone.View.extend
             _.each @favorites.byAddress(address), (fav) -> fav.destroy()
         
         return undefined
+    
+    onFavItemClick: (event) ->
+        $(@el).find("#input")[0].value = event.currentTarget.innerHTML
     
     refreshListView: ->
         try

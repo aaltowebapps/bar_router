@@ -4,7 +4,8 @@ window.InputView = Backbone.View.extend({
   events: {
     "submit": "submit",
     "change #input": "onInputChanged",
-    "click #favicon": "onFavIconClick"
+    "click #favicon": "onFavIconClick",
+    "click .favitem": "onFavItemClick"
   },
   initialize: function() {
     this.template = _.template(tpl.get('input'));
@@ -82,6 +83,9 @@ window.InputView = Backbone.View.extend({
         return fav.destroy();
       });
     }
+  },
+  onFavItemClick: function(event) {
+    return $(this.el).find("#input")[0].value = event.currentTarget.innerHTML;
   },
   refreshListView: function() {
     try {
