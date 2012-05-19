@@ -21,8 +21,6 @@ window.IndexView = Backbone.View.extend
         "change #to": "updateTo"
         "focus #from": "onFocusedFrom"
         "focus #to": "onFocusedTo"
-        "click #favfrom": "favToggleFrom"
-        "click #favto": "favToggleTo"
 
     render: ->
         d = new Date()
