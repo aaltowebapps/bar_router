@@ -3,21 +3,23 @@
 window.InputView = Backbone.View.extend({
   events: {
     "submit": "submit",
-    "click #inputFav": "toggleFavState"
+    "change #input": "onInputChanged",
+    "click #favicon": "onFavIconClick"
   },
   initialize: function() {
     this.template = _.template(tpl.get('input'));
     this.favorites = new Favorites();
-    this.favorites.bind('add', this.addOne, this);
-    return this.favorites.bind('reset', this.addAll, this);
+    return this.favorites.bind('remove', this.removeOne, this);
   },
   render: function() {
-    this.value = getUrlParam("value");
+    var inputValue;
+    inputValue = getUrlParam("value");
     $(this.el).html(this.template({
-      currentInput: this.value
+      currentInput: inputValue
     }));
     this.favlist = $(this.el).find("#favlist");
     this.favorites.fetch();
+    this.onInputChanged(null);
     this.addAll();
     return this;
   },
@@ -31,30 +33,34 @@ window.InputView = Backbone.View.extend({
       item = new FavoriteItemView({
         model: item
       }).render().el;
-      console.debug("Adding one...");
-      console.debug($("#favlist"));
-      $("#favlist").append(item);
-      $("#favlist").listview("refresh");
+      $(this.el).find("#favlist").append(item);
+      this.refreshListView();
     }
+  },
+  removeOne: function(item) {
+    this.favlist.empty();
+    return this.addAll();
   },
   addAll: function() {
     var _this = this;
-    _.each(this.favorites.models, function(result, index) {
-      var item;
-      item = new FavoriteItemView({
-        model: result
-      }).render().el;
-      return _this.favlist.append(item);
+    _.each(this.favorites.models, function(item, index) {
+      return _this.addOne(item);
     });
-    try {
-      this.favlist.listview("refresh");
-    } catch (error) {
-      console.debug(error);
+  },
+  onInputChanged: function(event) {
+    var favIcon, inputValue, matches;
+    inputValue = $(this.el).find("#input")[0].value;
+    favIcon = $(this.el).find("#favicon")[0];
+    matches = this.favorites.byAddress(inputValue);
+    if (matches.length > 0) {
+      return favIcon.src = favIcon.src.replace("off", "on");
+    } else {
+      return favIcon.src = favIcon.src.replace("on", "off");
     }
   },
-  toggleFavState: function(event) {
-    var address, el, enabled;
-    el = event.currentTarget;
+  onFavIconClick: function(event) {
+    var address, el, enabled, fav;
+    el = $(this.el).find("#favicon")[0];
     enabled = el.src.indexOf("off") !== -1;
     if (enabled) {
       el.src = el.src.replace("off", "on");
@@ -63,13 +69,25 @@ window.InputView = Backbone.View.extend({
     }
     address = $("#input")[0].value;
     if (enabled) {
-      this.favorites.create({
+      if (!this.favorites.contains({
         address: address
-      });
+      })) {
+        fav = this.favorites.create({
+          address: address
+        });
+        this.addOne(fav);
+      }
     } else {
-      this.favorites.each(function(item) {
-        return item.destroy;
+      _.each(this.favorites.byAddress(address), function(fav) {
+        return fav.destroy();
       });
+    }
+  },
+  refreshListView: function() {
+    try {
+      return this.favlist.listview("refresh");
+    } catch (error) {
+      return console.debug(error);
     }
   }
 });

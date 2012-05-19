@@ -14,7 +14,10 @@ class Favorites extends Backbone.Collection
         _.each @models.slice(0) (item) -> item.destroy()
         
     contains: (item) ->
-        return @indexOf(item) != -1
+        return @byAddress(item.address).length != 0
+        
+    byAddress: (address) ->
+        return _.filter @models, (fav) -> fav.get("address") == address
         
     comparator: (item) ->
         return item.get "address"

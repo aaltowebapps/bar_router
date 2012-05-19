@@ -50,7 +50,13 @@ Favorites = (function(_super) {
   };
 
   Favorites.prototype.contains = function(item) {
-    return this.indexOf(item) !== -1;
+    return this.byAddress(item.address).length !== 0;
+  };
+
+  Favorites.prototype.byAddress = function(address) {
+    return _.filter(this.models, function(fav) {
+      return fav.get("address") === address;
+    });
   };
 
   Favorites.prototype.comparator = function(item) {
