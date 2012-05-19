@@ -74,7 +74,10 @@ AppRouter = Backbone.Router.extend
         @changePage @pages.resultsView
         
     input: ->
-        @changePage(new InputView())
+        unless @pages.favoritesView
+            @pages.favoritesView = new InputView()
+            @insertToDOM @pages.favoritesView
+        @changePage @pages.favoritesView
 
     resultMap: (model) ->
         unless @pages.resultMap

@@ -82,7 +82,11 @@ AppRouter = Backbone.Router.extend({
     return this.changePage(this.pages.resultsView);
   },
   input: function() {
-    return this.changePage(new InputView());
+    if (!this.pages.favoritesView) {
+      this.pages.favoritesView = new InputView();
+      this.insertToDOM(this.pages.favoritesView);
+    }
+    return this.changePage(this.pages.favoritesView);
   },
   resultMap: function(model) {
     if (!this.pages.resultMap) {
