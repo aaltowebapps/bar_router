@@ -149,30 +149,5 @@ window.IndexView = Backbone.View.extend({
     dragpoint.id = targetTextBox;
     app.vectors.addFeatures([dragpoint]);
     return dragpoint;
-  },
-  favToggle: function(direction) {
-    var address, el, enabled;
-    el = $("#fav" + direction)[0];
-    enabled = el.src.contains("off");
-    if (enabled) {
-      el.src = el.src.replace("off", "on");
-    } else {
-      el.src = el.src.replace("on", "off");
-    }
-    address = $("#" + direction)[0].value;
-    if (enabled) {
-      Favorites.add(address);
-    } else {
-      Favorites.remove(address);
-    }
-    return enabled;
-  },
-  favToggleFrom: function(event) {
-    event.preventDefault();
-    this.favToggle("from");
-  },
-  favToggleTo: function(event) {
-    event.preventDefault();
-    this.favToggle("to");
   }
 });
