@@ -59,7 +59,7 @@ window.ResultsView = Backbone.View.extend({
     var output;
     output = [];
     _.each(routes, function(route) {
-      var legs;
+      var last, legs;
       route = route[0];
       legs = [];
       _.each(route.legs, function(leg) {
@@ -74,16 +74,16 @@ window.ResultsView = Backbone.View.extend({
             leg.code = leg.code.slice(1);
           }
         } else if (leg.type === "2") {
-          out.type = "tram";
+          leg.type = "tram";
           leg.code = $.trim(leg.code.slice(2, 5));
           if (leg.code[0] === "0") {
             leg.code = leg.code.slice(1);
           }
         } else if (leg.type === "12") {
-          out.type = "train";
+          leg.type = "train";
           leg.code = $.trim(leg.code.slice(3, 5));
         } else if (leg.type = "6") {
-          out.type = "metro";
+          leg.type = "metro";
           leg.code = "Metro";
         }
         locs = [];
@@ -96,8 +96,22 @@ window.ResultsView = Backbone.View.extend({
         return legs.push(leg);
       });
       route.legs = legs;
+      route.depTime = route.legs[0].locs[0].depTime;
+      if (route.legs[0].type === "walk" && route.legs.length > 1) {
+        route.depTimeStop = route.legs[1].locs[0].depTime;
+      } else {
+        route.depTimeStop = route.legs[0].locs[0].depTime;
+      }
+      last = route.legs.slice(-1)[0];
+      route.arrTime = last.locs.slice(-1)[0].arrTime;
+      if (last.type === "walk" && route.legs.length > 1) {
+        route.arrTimeStop = route.legs.slice(-2)[0].locs.slice(-1)[0].arrTime;
+      } else {
+        route.arrTimeStop = last.locs.slice(-1)[0].arrTime;
+      }
       return output.push(route);
     });
+    console.log(output);
     return output;
   }
 });

@@ -13,6 +13,7 @@ Backbone.View.prototype.navigateAnchor = function(event) {
 Backbone.View.prototype.back = function(event) {
   app.route.removeAllFeatures();
   event.preventDefault();
+  app.historyBack = true;
   return window.history.back();
 };
 
@@ -59,6 +60,7 @@ AppRouter = Backbone.Router.extend({
     if (!debug) {
       $("head").append("<style type='text/css'>" + collated_stylesheets + "</style>");
     }
+    this.historyBack = false;
     this.firstPage = true;
     return this.pages = {};
   },
@@ -108,17 +110,23 @@ AppRouter = Backbone.Router.extend({
     return $("body").append($(page.el));
   },
   changePage: function(page) {
-    var transition;
+    var animate, transition;
     transition = $.mobile.defaultPageTransition;
     transition = "slide";
     if (this.firstPage || $.browser.opera) {
       transition = "none";
       this.firstPage = false;
     }
-    $.mobile.changePage($(page.el), {
+    animate = {
       changeHash: false,
       transition: transition
-    });
+    };
+    if (this.historyBack) {
+      this.historyBack = false;
+      animate.reverse = true;
+    }
+    console.log(history);
+    $.mobile.changePage($(page.el), animate);
     if (page.updateListview) {
       page.updateListview();
     }

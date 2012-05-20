@@ -1,6 +1,6 @@
 <a style="text-align: center;" href="#showRoute" class="route">
     <div class="route-parts">
-        <div><%= route.legs[0].locs[0].depTime %><br/>(<%= route.legs[0].locs[0].arrTime %>)</div> - <% _.each(route.legs, function(leg) { if (leg.code) {print("<div><img width='30' height='30'><br/>" + leg.code + "</div>")} else {print("<div><img width='30' height='30'><br/>w</div>")};}  ); %> - <div><%=route.legs.slice(-1)[0].locs.slice(-1)[0].depTime %><br/>(<%=route.legs.slice(-1)[0].locs.slice(-1)[0].arrTime %>)</div>
+        <div><%= route.depTime %><br/><span class="smaller">(<%= route.depTimeStop %>)</span></div><div class="dash"> - </div><% _.each(route.legs, function(leg) { if (leg.code) {print("<div><div class='icon " + leg.type + "'></div><br/><span class='smaller'>" + leg.code + "</span></div>")} else {print("<div><div class='walk'></div></div>")};}  ); %><div class="dash"> - </div><div><%=route.arrTime %><br/><span class="smaller">(<%=route.arrTimeStop %>)</span></div>
     </div>
     <div><%= route.duration / 60 %>min</div>
 </a>

@@ -49,6 +49,7 @@ window.ResultsView = Backbone.View.extend
         _.each routes, (route) ->
             route = route[0]
             legs = []
+            
             _.each route.legs, (leg) ->
                 if leg.type == "walk"
                     leg.type = "walk"
@@ -59,15 +60,15 @@ window.ResultsView = Backbone.View.extend
                     if leg.code[0] == "0"
                         leg.code = leg.code.slice(1)
                 else if leg.type == "2"
-                    out.type = "tram"
+                    leg.type = "tram"
                     leg.code = $.trim(leg.code.slice(2,5))
                     if leg.code[0] == "0"
                         leg.code = leg.code.slice(1)
                 else if leg.type == "12"
-                    out.type = "train"
+                    leg.type = "train"
                     leg.code = $.trim(leg.code.slice(3,5))
                 else if leg.type = "6"
-                    out.type = "metro"
+                    leg.type = "metro"
                     leg.code = "Metro"
 
 
@@ -81,7 +82,24 @@ window.ResultsView = Backbone.View.extend
 
                 legs.push(leg)
             route.legs = legs
+
+            route.depTime = route.legs[0].locs[0].depTime
+            
+            if route.legs[0].type == "walk" and route.legs.length > 1
+                route.depTimeStop = route.legs[1].locs[0].depTime
+            else
+                route.depTimeStop = route.legs[0].locs[0].depTime
+
+            last = route.legs.slice(-1)[0]
+            route.arrTime = last.locs.slice(-1)[0].arrTime
+
+            if last.type == "walk" and route.legs.length > 1
+                route.arrTimeStop = route.legs.slice(-2)[0].locs.slice(-1)[0].arrTime
+            else
+                route.arrTimeStop = last.locs.slice(-1)[0].arrTime
+
             output.push(route)
+        console.log output
         return output
 
 

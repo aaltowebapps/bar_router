@@ -8,6 +8,7 @@ Backbone.View::navigateAnchor = (event) ->
 Backbone.View::back = (event) ->
     app.route.removeAllFeatures()
     event.preventDefault()
+    app.historyBack = true
     window.history.back()
 
 AppRouter = Backbone.Router.extend
@@ -53,6 +54,7 @@ AppRouter = Backbone.Router.extend
         unless debug
             $("head").append "<style type='text/css'>" + collated_stylesheets + "</style>"
         
+        @historyBack = false
         @firstPage = true
         @pages = {}
 
@@ -102,9 +104,16 @@ AppRouter = Backbone.Router.extend
             transition = "none"
             @firstPage = false
 
-        $.mobile.changePage $(page.el),
-            changeHash: false
-            transition: transition
+        animate =
+            changeHash:false
+            transition:transition
+        if @historyBack
+            @historyBack = false
+            animate.reverse = true
+
+        console.log history
+
+        $.mobile.changePage $(page.el), animate
             
         page.updateListview() if page.updateListview
         page.initMap() if page.initMap

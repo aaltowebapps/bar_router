@@ -35,28 +35,41 @@ window.ResultMapView = Backbone.View.extend({
     return _.each(this.model.legs, function(leg) {
       var line, points, style;
       points = [];
-      _.each(leg.locs, function(loc) {
-        var sm_coords, wgs_coords;
-        wgs_coords = {
-          lon: loc.coord.x,
-          lat: loc.coord.y
-        };
-        sm_coords = toSMercator(wgs_coords);
-        centerMap(sm_coords, 12);
-        return points.push(new OpenLayers.Geometry.Point(sm_coords.lon, sm_coords.lat));
-      });
+      if (leg.shape) {
+        _.each(leg.shape, function(coord) {
+          var sm_coords, wgs_coords;
+          wgs_coords = {
+            lon: coord.x,
+            lat: coord.y
+          };
+          sm_coords = toSMercator(wgs_coords);
+          centerMap(sm_coords, 12);
+          return points.push(new OpenLayers.Geometry.Point(sm_coords.lon, sm_coords.lat));
+        });
+      } else {
+        _.each(leg.locs, function(loc) {
+          var sm_coords, wgs_coords;
+          wgs_coords = {
+            lon: loc.coord.x,
+            lat: loc.coord.y
+          };
+          sm_coords = toSMercator(wgs_coords);
+          centerMap(sm_coords, 12);
+          return points.push(new OpenLayers.Geometry.Point(sm_coords.lon, sm_coords.lat));
+        });
+      }
       line = new OpenLayers.Geometry.LineString(points);
       style = {
         strokeOpacity: 0.5,
         strokeWidth: 5
       };
-      if (["1", "3", "4", "5"].indexOf(leg.type) !== -1) {
+      if (leg.type === "bus") {
         style["strokeColor"] = "#0000ff";
-      } else if (leg.type === "2") {
+      } else if (leg.type === "tram") {
         style["strokeColor"] = "#00ff00";
-      } else if (leg.type === "12") {
+      } else if (leg.type === "train") {
         style["strokeColor"] = "#ff0000";
-      } else if (leg.type === "6") {
+      } else if (leg.type === "metro") {
         style["strokeColor"] = "#ff8c00";
       }
       return app.route.addFeatures([new OpenLayers.Feature.Vector(line, null, style)]);

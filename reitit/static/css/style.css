@@ -8,8 +8,38 @@ html, body {
 
 .route-parts div {
     display:inline-block;
+    vertical-align: top;
+    margin: 0 0.2em;
+}
+.route-parts span.smaller {
+    font-size: 0.8em;
+}
+
+.route-parts div.dash {
     vertical-align: middle;
-    margin: 0 0.5em;
+}
+
+.route-parts div.icon {
+    width: 20px;
+    height: 20px;
+}
+
+.route-parts div.bus {
+    background-image: url('/static/icons/bussi.gif');
+}
+
+.route-parts div.walk {
+    background-image: url('/static/icons/walk.gif');
+    width: 12px;
+    height: 21px;
+}
+
+.route-parts div.tram {
+    background-image: url('/static/icons/ratikka.gif');
+}
+
+.route-parts div.metro {
+    background-image: url('/static/icons/metro.gif');
 }
 
 #basicMap {
