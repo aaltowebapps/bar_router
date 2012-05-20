@@ -54,28 +54,33 @@ html, body {
 a {
   color: white; }
 
-div.number-box {
-  width: 100%;
-  margin-left: 0.4em;
-  margin-right: 0; 
-
-}
 #search input.tel {
     display: inline-block;
     width: 1.5em;
     max-width: 100px;
     vertical-align: top; }
   input[type=tel].right {
+      margin-left: 0.3em;
       text-align: right; }
 
-#search .ui-select {
-    display: inline-block;
-    width: 40%;
-} 
+/*#search .ui-select {
+    float: right;
+    width: 60%;
+} */
 
 #search {
   max-width: 500px;
   margin: 0 auto; }
+
+
+
+#times {
+    margin-top: 0.1em;
+    float: left;
+    width: 40%;
+    z-index: 10;
+
+}
 
 input[type=text].ui-input-text {
   width: 90%; }

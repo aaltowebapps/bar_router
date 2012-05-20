@@ -14,14 +14,17 @@
             <img class="focusIcon" id="toFocus" src="static/zoom.png" width="32" height="32" />
         </div>
 
-        <input class="right tel" type="tel" name="hour" id="hour" maxlength="2" value="<%= time.hours %>" pattern="(2[0-3])|([0-1]?[0-9])" title="hours" />
+        <div id="times">
+            <input class="right tel" type="tel" name="hour" id="hour" maxlength="2" value="<%= time.hours %>" pattern="(2[0-3])|([0-1]?[0-9])" title="hours" />
         <span style="font-size:1.5em;">:</span>
         <input class="tel" type="tel" name="minute" id="minute" maxlength="2" value="<%= time.minutes %>"  pattern="[0-5]?[0-9]" title="minutes" />
-            <select name="select-choice-1" name="select-choice-min" id="select-choise-min">
-
-                <option value="departure">Departure time</option>
-                <option value="arrival">Arraival time</option>
-            </select>
+        </div>
+        <div id="timetype">
+        <select name="select-choice-1" name="select-choice-min" id="select-choise-min">
+            <option value="departure">Departure time</option>
+            <option value="arrival">Arrival time</option>
+        </select>
+    </div>
 
         <input type="submit" value="Go" data-mini="true" />
     </form>

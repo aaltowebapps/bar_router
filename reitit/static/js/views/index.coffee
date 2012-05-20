@@ -42,6 +42,12 @@ window.IndexView = Backbone.View.extend
             hours: d.getHours()
             minutes: d.getMinutes()
 
+        if time.hours < 10
+            time.hours = "0" + time.hours
+        if time.minutes < 10
+            time.minutes = "0" + time.minutes
+
+
         $(@el).html @template({time:time})
 
         Reittiopas.locate "Kamppi", (data) =>
