@@ -78,7 +78,11 @@ window.IndexView = Backbone.View.extend
         to = encodeURI(event.target[1].value)
         time = encodeURI(event.target[2].value + event.target[3].value)
         timetype = encodeURI(event.target[4].value)
-        app.navigate "/route/?from=#{from}&to=#{to}&time=#{time}&timetype=#{timetype}"
+        
+        nav = "/route/?from=#{from}&to=#{to}&time=#{time}"
+        if timetype == "arrival"
+            nav += "&timetype=#{timetype}"
+        app.navigate nav
         app.results(true)
 
     onFocusedFrom: (event) ->

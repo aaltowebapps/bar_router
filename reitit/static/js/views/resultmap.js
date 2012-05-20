@@ -10,6 +10,9 @@ window.ResultMapView = Backbone.View.extend({
     };
     return $(window).on("resize", res);
   },
+  preventDefault: function(event) {
+    return event.preventDefault();
+  },
   initMap: function() {
     return app.map.render($("#resultMap")[0]);
   },
@@ -23,11 +26,24 @@ window.ResultMapView = Backbone.View.extend({
     return app.map.updateSize();
   },
   events: {
-    "click .back": "back"
+    "click .back": "back",
+    "#currentroute a click": "preventDefault"
   },
   render: function() {
+    var item, list;
     $(this.el).html(this.template());
-    return this.showOnMap();
+    this.showOnMap();
+    list = $(this.el).find("#currentroute");
+    item = new ResultsViewItem({
+      model: this.model
+    }).render().el;
+    return list.append(item);
+  },
+  updateListview: function() {
+    var list;
+    list = $(this.el).find("#currentroute");
+    list.listview('refresh');
+    return list.find(".ui-icon").remove();
   },
   showOnMap: function() {
     var _this = this;

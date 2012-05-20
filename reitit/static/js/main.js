@@ -125,7 +125,6 @@ AppRouter = Backbone.Router.extend({
       this.historyBack = false;
       animate.reverse = true;
     }
-    console.log(history);
     $.mobile.changePage($(page.el), animate);
     if (page.updateListview) {
       page.updateListview();

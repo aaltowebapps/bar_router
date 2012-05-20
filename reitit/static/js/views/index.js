@@ -91,13 +91,17 @@ window.IndexView = Backbone.View.extend({
     return this;
   },
   submit: function(event) {
-    var from, time, timetype, to;
+    var from, nav, time, timetype, to;
     event.preventDefault();
     from = encodeURI(event.target[0].value);
     to = encodeURI(event.target[1].value);
     time = encodeURI(event.target[2].value + event.target[3].value);
     timetype = encodeURI(event.target[4].value);
-    app.navigate("/route/?from=" + from + "&to=" + to + "&time=" + time + "&timetype=" + timetype);
+    nav = "/route/?from=" + from + "&to=" + to + "&time=" + time;
+    if (timetype === "arrival") {
+      nav += "&timetype=" + timetype;
+    }
+    app.navigate(nav);
     return app.results(true);
   },
   onFocusedFrom: function(event) {

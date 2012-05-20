@@ -6,6 +6,9 @@ window.ResultMapView = Backbone.View.extend
             @resizeMap(event)
         $(window).on "resize", res
 
+    preventDefault: (event) ->
+        event.preventDefault()
+
     initMap: ->
         app.map.render $("#resultMap")[0]
         
@@ -20,11 +23,20 @@ window.ResultMapView = Backbone.View.extend
 
     events:
         "click .back": "back"
+        "#currentroute a click": "preventDefault"
 
     render: ->
         $(@el).html @template()
         @showOnMap()
 
+        list = $(@el).find("#currentroute")
+        item = new ResultsViewItem(model: @model).render().el
+        list.append item
+
+    updateListview: ->
+        list = $(@el).find("#currentroute")
+        list.listview('refresh')
+        list.find(".ui-icon").remove()
 
     showOnMap: ->
         #        event.preventDefault()
