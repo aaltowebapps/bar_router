@@ -6,6 +6,12 @@ html, body {
   color: #cccccc;
   font-family: sans-serif; }
 
+.route-parts div {
+    display:inline-block;
+    vertical-align: middle;
+    margin: 0 0.5em;
+}
+
 #basicMap {
   width: 100%;
   height: 200px; }

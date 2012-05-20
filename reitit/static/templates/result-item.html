@@ -1,1 +1,6 @@
-<a style="text-align: center;" href="#showRoute" class="route"><div><%= route.legs[0].locs[0].depTime.slice(8,10) %>:<%=route.legs[0].locs[0].depTime.slice(10,12)%> - | <% _.each(route.legs, function(leg) { if (leg.code) {print(leg.code + " | ")} else {print("w | ")};}  ); %></div><div><%= route.duration / 60 %>min</div></a>
+<a style="text-align: center;" href="#showRoute" class="route">
+    <div class="route-parts">
+        <div><%= route.legs[0].locs[0].depTime %><br/>(<%= route.legs[0].locs[0].arrTime %>)</div> - <% _.each(route.legs, function(leg) { if (leg.code) {print("<div><img width='30' height='30'><br/>" + leg.code + "</div>")} else {print("<div><img width='30' height='30'><br/>w</div>")};}  ); %> - <div><%=route.legs.slice(-1)[0].locs.slice(-1)[0].depTime %><br/>(<%=route.legs.slice(-1)[0].locs.slice(-1)[0].arrTime %>)</div>
+    </div>
+    <div><%= route.duration / 60 %>min</div>
+</a>

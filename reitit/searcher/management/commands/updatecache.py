@@ -12,7 +12,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         files = [
                 "/static/js/app.js",
-                "/static/css/responsive.css",
                 ]
 
 

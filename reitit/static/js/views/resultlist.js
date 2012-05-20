@@ -37,7 +37,7 @@ window.ResultsView = Backbone.View.extend({
     $(this.el).find("#loader").css("display", "block");
     this.updateParams();
     return Reittiopas.route(this.params, function(results) {
-      _this.model = results;
+      _this.model = _this.processRoutes(results);
       $(_this.el).find("#loader").hide();
       return _this.generateList();
     });
@@ -46,14 +46,59 @@ window.ResultsView = Backbone.View.extend({
     var routelist,
       _this = this;
     routelist = $(this.el).find("#routelist");
-    _.each(this.model, function(result) {
+    _.each(this.model, function(route) {
       var item;
       item = new ResultsViewItem({
-        model: result[0]
+        model: route
       }).render().el;
       return routelist.append(item);
     });
     return routelist.listview('refresh');
+  },
+  processRoutes: function(routes) {
+    var output;
+    output = [];
+    _.each(routes, function(route) {
+      var legs;
+      route = route[0];
+      legs = [];
+      _.each(route.legs, function(leg) {
+        var locs;
+        if (leg.type === "walk") {
+          leg.type = "walk";
+          leg.code = null;
+        } else if (["1", "3", "4", "5"].indexOf(leg.type) !== -1) {
+          leg.type = "bus";
+          leg.code = $.trim(leg.code.slice(1, 5));
+          if (leg.code[0] === "0") {
+            leg.code = leg.code.slice(1);
+          }
+        } else if (leg.type === "2") {
+          out.type = "tram";
+          leg.code = $.trim(leg.code.slice(2, 5));
+          if (leg.code[0] === "0") {
+            leg.code = leg.code.slice(1);
+          }
+        } else if (leg.type === "12") {
+          out.type = "train";
+          leg.code = $.trim(leg.code.slice(3, 5));
+        } else if (leg.type = "6") {
+          out.type = "metro";
+          leg.code = "Metro";
+        }
+        locs = [];
+        _.each(leg.locs, function(loc) {
+          loc.arrTime = loc.arrTime.slice(8, 10) + ":" + loc.arrTime.slice(10, 12);
+          loc.depTime = loc.depTime.slice(8, 10) + ":" + loc.depTime.slice(10, 12);
+          return locs.push(loc);
+        });
+        leg.locs = locs;
+        return legs.push(leg);
+      });
+      route.legs = legs;
+      return output.push(route);
+    });
+    return output;
   }
 });
 

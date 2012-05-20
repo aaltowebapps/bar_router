@@ -6,11 +6,11 @@
     <div id="search">
     <form>
         <div class="squeeze">
-            <input type="text" id="from" name="from" placeholder="lähtöpaikka" data-mini="true" />
+            <input type="text" id="from" name="from" placeholder="start location" data-mini="true" />
             <img class="focusIcon" id="fromFocus" src="static/zoom.png" width="32" height="32" />
         </div>
         <div class="squeeze">
-            <input type="text" id="to" name="to" placeholder="määränpää" data-mini="true" />
+            <input type="text" id="to" name="to" placeholder="destination" data-mini="true" />
             <img class="focusIcon" id="toFocus" src="static/zoom.png" width="32" height="32" />
         </div>
 
@@ -19,8 +19,8 @@
         <input class="tel" type="tel" name="minute" id="minute" maxlength="2" value="<%= time.minutes %>"  pattern="[0-5]?[0-9]" title="minutes" />
             <select name="select-choice-1" name="select-choice-min" id="select-choise-min">
 
-                <option value="departure">Time on departure</option>
-                <option value="arrival">Time on arrival</option>
+                <option value="departure">Departure time</option>
+                <option value="arrival">Arraival time</option>
             </select>
 
         <input type="submit" value="Go" data-mini="true" />
