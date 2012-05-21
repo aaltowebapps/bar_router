@@ -155,14 +155,16 @@ AppRouter = Backbone.Router.extend({
   }
 });
 
-tpl.loadTemplates(["searcher", "results", "result-item", "input", "favorite-item", "resultmap"], function() {
-  var action, route, routes;
-  routes = AppRouter.prototype.routes;
-  for (route in routes) {
-    action = routes[route];
-    routes[route + "/"] = action;
-  }
-  AppRouter.prototype.routes = routes;
-  app = new AppRouter();
-  return Backbone.history.start();
+$(function() {
+  return tpl.loadTemplates(["searcher", "results", "result-item", "input", "favorite-item", "resultmap"], function() {
+    var action, route, routes;
+    routes = AppRouter.prototype.routes;
+    for (route in routes) {
+      action = routes[route];
+      routes[route + "/"] = action;
+    }
+    AppRouter.prototype.routes = routes;
+    app = new AppRouter();
+    return Backbone.history.start();
+  });
 });

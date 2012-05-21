@@ -23,7 +23,6 @@ window.IndexView = Backbone.View.extend({
     return app.map.updateSize();
   },
   updateLocationFields: function(data) {
-    console.log(data);
     if (!data) {
       return;
     }
@@ -49,7 +48,9 @@ window.IndexView = Backbone.View.extend({
     "focus #from": "onFocusedFrom",
     "focus #to": "onFocusedTo",
     "click #from": "onFocusedFrom",
-    "click #to": "onFocusedTo"
+    "click #to": "onFocusedTo",
+    "click #fromFocus": "onCenterFrom",
+    "click #toFocus": "onCenterTo"
   },
   render: function() {
     var d, time,

@@ -25,25 +25,25 @@ html, body {
 }
 
 .route-parts div.bus {
-    background-image: url('/static/icons/bussi.gif');
+    background-image: url("/static/icons/bussi.gif");
 }
 
 .route-parts div.walk {
-    background-image: url('/static/icons/walk.gif');
+    background-image: url("/static/icons/walk.gif");
     width: 12px;
     height: 21px;
 }
 
 .route-parts div.tram {
-    background-image: url('/static/icons/ratikka.gif');
+    background-image: url("/static/icons/ratikka.gif");
 }
 
 .route-parts div.train {
-    background-image: url('/static/icons/juna.gif');
+    background-image: url("/static/icons/juna.gif");
 }
 
 .route-parts div.metro {
-    background-image: url('/static/icons/metro.gif');
+    background-image: url("/static/icons/metro.gif");
 }
 
 #basicMap {

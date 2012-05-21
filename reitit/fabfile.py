@@ -85,11 +85,11 @@ def _prepare_deploy():
                 with open(cssdir + filu) as cssfilu:
                     css += cssfilu.read()
 
-        css += "';"
+        css += "';\n"
 
         lib = ""
         libdir = "lib/"
-        for filu in ("jquery-1.7.1.min.js", "jqm-config.js", "jquery.mobile-1.1.0.min.js", "underscore-min.js", "backbone-min.js", "OpenLayers.mobile.js"):
+        for filu in ("jquery-1.7.1.min.js", "jqm-config.js", "jquery.mobile-1.1.0.min.js", "underscore-min.js", "backbone-min.js", "backbone.localStorage-min.js", "OpenLayers.mobile.js"):
             with open(libdir + filu) as libfile:
                 lib += libfile.read()
 
@@ -98,7 +98,7 @@ def _prepare_deploy():
         app = "" 
         main = ""
 
-        for filu in ("models.js", "utils.js", "main.js", "reittiopas.js"):
+        for filu in ("favorites.js", "models.js", "utils.js", "main.js", "reittiopas.js"):
             with open(jsdir + filu) as jsfile:
                 local( env.minifier + " " + jsdir + filu + " " + jsdir + filu)
                 if filu == "main.js":

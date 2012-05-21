@@ -17,7 +17,6 @@ window.IndexView = Backbone.View.extend
         app.map.updateSize()
 
     updateLocationFields: (data) ->
-        console.log data
         return undefined unless data
         @updateFrom currentTarget: value: data.from if data.from
         @updateTo currentTarget: value: data.to if data.to
@@ -41,8 +40,8 @@ window.IndexView = Backbone.View.extend
         "focus #to": "onFocusedTo"
         "click #from": "onFocusedFrom"
         "click #to": "onFocusedTo"
-#        "click #fromFocus": "onCenterFrom"
-#        "click #toFocus": "onCenterTo"
+        "click #fromFocus": "onCenterFrom"
+        "click #toFocus": "onCenterTo"
 
     render: ->
         d = new Date()

@@ -129,12 +129,14 @@ AppRouter = Backbone.Router.extend
         page.initMap() if page.initMap
         page.resizeMap() if page.resizeMap
         page.updateLocationFields() if page.updateLocationFields
-       
-tpl.loadTemplates [ "searcher", "results", "result-item", "input", "favorite-item", "resultmap" ], ->
-    routes = AppRouter::routes
-    for route, action of routes
-        routes[route + "/"] = action
-    AppRouter::routes = routes
-    app = new AppRouter()
 
-    Backbone.history.start()
+$ ->
+    tpl.loadTemplates [ "searcher", "results", "result-item", "input", "favorite-item", "resultmap" ], ->
+        routes = AppRouter::routes
+        for route, action of routes
+            routes[route + "/"] = action
+        AppRouter::routes = routes
+        app = new AppRouter()
+
+        Backbone.history.start()
+
