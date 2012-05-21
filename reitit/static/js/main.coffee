@@ -8,6 +8,10 @@ Backbone.View::navigateAnchor = (event) ->
 Backbone.View::back = (event) ->
     app.route.removeAllFeatures()
     event.preventDefault()
+    if @transition
+        app.transition = @transition
+    else
+        app.transition = "slide"
     app.historyBack = true
     window.history.back()
 
@@ -57,16 +61,18 @@ AppRouter = Backbone.Router.extend
         @historyBack = false
         @firstPage = true
         @pages = {}
+        @transition = "slide"
 
     routes:
         "": "index"
         "route/*splat": "results"
         "input/*splat": "input"
 
-    index: ->
+    index: (data) ->
         unless @pages.index
             @pages.index = new IndexView()
             @insertToDOM @pages.index
+        @pages.index.updateLocationFields(data) if data
         @changePage @pages.index
 
     results: (update) ->
@@ -77,10 +83,12 @@ AppRouter = Backbone.Router.extend
             @pages.resultsView.updateModel()
         @changePage @pages.resultsView
         
-    input: ->
+    input: () ->
         unless @pages.favoritesView
             @pages.favoritesView = new InputView()
             @insertToDOM @pages.favoritesView
+        else
+            @pages.favoritesView.updateParams()
         @changePage @pages.favoritesView
 
     resultMap: (model) ->
@@ -98,8 +106,9 @@ AppRouter = Backbone.Router.extend
         $("body").append $(page.el)
 
     changePage: (page) ->
-        transition = $.mobile.defaultPageTransition
-        transition = "slide"
+        transition = app.transition
+        transition = page.transition if page.transition
+
         if @firstPage or $.browser.opera
             transition = "none"
             @firstPage = false
@@ -107,10 +116,12 @@ AppRouter = Backbone.Router.extend
         animate =
             changeHash:false
             transition:transition
+
         if @historyBack
             @historyBack = false
             animate.reverse = true
 
+        app.transition = "slide"
 
         $.mobile.changePage $(page.el), animate
             

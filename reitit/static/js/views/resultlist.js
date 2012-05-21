@@ -81,7 +81,7 @@ window.ResultsView = Backbone.View.extend({
           }
         } else if (leg.type === "12") {
           leg.type = "train";
-          leg.code = $.trim(leg.code.slice(3, 5));
+          leg.code = $.trim(leg.code.slice(4, 5));
         } else if (leg.type = "6") {
           leg.type = "metro";
           leg.code = "Metro";

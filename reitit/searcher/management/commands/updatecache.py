@@ -12,6 +12,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         files = [
                 "/static/js/app.js",
+                "/static/icons/juna.gif",
+                "/static/icons/ratikka.gif",
+                "/static/icons/bussi.gif",
+                "/static/icons/metro.gif",
+                "/static/icons/walk.gif",
+                "/static/loader.gif",
+                "/static/favicon.ico",
                 ]
 
 

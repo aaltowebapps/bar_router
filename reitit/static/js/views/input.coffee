@@ -1,4 +1,6 @@
 window.InputView = Backbone.View.extend
+    transition: "pop"
+
     events:
         "click .back": "back"
         "submit": "submit"
@@ -14,21 +16,33 @@ window.InputView = Backbone.View.extend
         @favorites.bind('reset', @addAll, @)
         
     render: ->
-        @target = getUrlParam("target")
-        inputValue = window.InputView::[@target]
-        $(@el).html @template({ currentInput:inputValue })
+        @updateParams()
+#        inputValue = window.InputView::[@target]
+        $(@el).html @template({ currentInput:@value })
         @favlist = $(@el).find("#favlist")
         @onInputChanged(null)
         return @
-    
+
+    updateParams: ->
+        @target = getUrlParam("target")
+        @value = getUrlParam("value")
+        $(@el).find("#input").val @value
+        
+
     updateListview: ->
         @favorites.fetch()
         @onInputChanged()
     
     submit: (event) ->
         event.preventDefault()
-        window.InputView::[@target] = $(@el).find("#input")[0].value
-        app.navigate "/", true
+#        window.InputView::[@target] = $(@el).find("#input")[0].value
+#        @back(event)
+        app.transition = @transition
+        app.historyBack = true
+        app.navigate "/"
+        call = {}
+        call["#{@target}"] = $(@el).find("#input")[0].value
+        app.index call
         return undefined
         
     addOne: (item) ->
@@ -52,7 +66,7 @@ window.InputView = Backbone.View.extend
         @addAll()
         
     onInputChanged: (event) ->
-        window.InputView::[@target] = $(@el).find("#input")[0].value
+        #window.InputView::[@target] = $(@el).find("#input")[0].value
         inputValue = $(@el).find("#input")[0].value
         favIcon = $(@el).find("#favicon")[0]
         matches = @favorites.byAddress inputValue
@@ -69,9 +83,16 @@ window.InputView = Backbone.View.extend
         else el.src = el.src.replace("on", "off")
         
         address = $("#input")[0].value
+        console.log address
         if enabled
-            unless @favorites.contains {address:address}
-                fav = @favorites.create {address:address}
+            Reittiopas.locate address, (data) =>
+                if data.details.houseNumber
+                    val = "#{data.name} #{data.details.houseNumber}, #{data.city}"
+                else
+                    val = "#{data.name}, #{data.city}"
+                $("#input").val val
+                unless @favorites.contains {address:val}
+                    fav = @favorites.create {address:val}
         else
             _.each @favorites.byAddress(address), (fav) -> fav.destroy()
         

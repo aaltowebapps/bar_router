@@ -22,22 +22,25 @@ window.IndexView = Backbone.View.extend({
     $("#basicMap").height(h + "px");
     return app.map.updateSize();
   },
-  updateLocationFields: function() {
-    var event;
-    event = {
-      currentTarget: {
-        value: void 0
-      }
-    };
-    if (window.InputView.prototype.from !== void 0) {
-      event.currentTarget.value = window.InputView.prototype.from;
-      this.updateFrom(event);
-    } else if (window.InputView.prototype.to !== void 0) {
-      event.currentTarget.value = window.InputView.prototype.to;
-      this.updateTo(event);
+  updateLocationFields: function(data) {
+    console.log(data);
+    if (!data) {
+      return;
     }
-    window.InputView.prototype.from = void 0;
-    return window.InputView.prototype.to = void 0;
+    if (data.from) {
+      this.updateFrom({
+        currentTarget: {
+          value: data.from
+        }
+      });
+    }
+    if (data.to) {
+      this.updateTo({
+        currentTarget: {
+          value: data.to
+        }
+      });
+    }
   },
   events: {
     "submit": "submit",
@@ -45,8 +48,8 @@ window.IndexView = Backbone.View.extend({
     "change #to": "updateTo",
     "focus #from": "onFocusedFrom",
     "focus #to": "onFocusedTo",
-    "click #fromFocus": "onCenterFrom",
-    "click #toFocus": "onCenterTo"
+    "click #from": "onFocusedFrom",
+    "click #to": "onFocusedTo"
   },
   render: function() {
     var d, time,
@@ -111,12 +114,12 @@ window.IndexView = Backbone.View.extend({
     return app.results(true);
   },
   onFocusedFrom: function(event) {
-    window.InputView.prototype.from = event.currentTarget.value;
-    return app.navigate("/input/?target=from", true);
+    event.preventDefault();
+    return app.navigate("/input/?target=from&value=" + event.currentTarget.value, true);
   },
   onFocusedTo: function(event) {
-    window.InputView.prototype.to = event.currentTarget.value;
-    return app.navigate("/input/?target=to", true);
+    event.preventDefault();
+    return app.navigate("/input/?target=to&value=" + event.currentTarget.value, true);
   },
   onCenterFrom: function(event) {
     var coords;

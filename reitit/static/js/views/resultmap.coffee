@@ -19,8 +19,6 @@ window.ResultMapView = Backbone.View.extend
         $("#resultMap").height(h + "px")
         app.map.updateSize()
 
-
-
     events:
         "click .back": "back"
         "#currentroute a click": "preventDefault"

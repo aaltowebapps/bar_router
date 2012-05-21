@@ -13,6 +13,11 @@ Backbone.View.prototype.navigateAnchor = function(event) {
 Backbone.View.prototype.back = function(event) {
   app.route.removeAllFeatures();
   event.preventDefault();
+  if (this.transition) {
+    app.transition = this.transition;
+  } else {
+    app.transition = "slide";
+  }
   app.historyBack = true;
   return window.history.back();
 };
@@ -62,17 +67,21 @@ AppRouter = Backbone.Router.extend({
     }
     this.historyBack = false;
     this.firstPage = true;
-    return this.pages = {};
+    this.pages = {};
+    return this.transition = "slide";
   },
   routes: {
     "": "index",
     "route/*splat": "results",
     "input/*splat": "input"
   },
-  index: function() {
+  index: function(data) {
     if (!this.pages.index) {
       this.pages.index = new IndexView();
       this.insertToDOM(this.pages.index);
+    }
+    if (data) {
+      this.pages.index.updateLocationFields(data);
     }
     return this.changePage(this.pages.index);
   },
@@ -89,6 +98,8 @@ AppRouter = Backbone.Router.extend({
     if (!this.pages.favoritesView) {
       this.pages.favoritesView = new InputView();
       this.insertToDOM(this.pages.favoritesView);
+    } else {
+      this.pages.favoritesView.updateParams();
     }
     return this.changePage(this.pages.favoritesView);
   },
@@ -111,8 +122,10 @@ AppRouter = Backbone.Router.extend({
   },
   changePage: function(page) {
     var animate, transition;
-    transition = $.mobile.defaultPageTransition;
-    transition = "slide";
+    transition = app.transition;
+    if (page.transition) {
+      transition = page.transition;
+    }
     if (this.firstPage || $.browser.opera) {
       transition = "none";
       this.firstPage = false;
@@ -125,6 +138,7 @@ AppRouter = Backbone.Router.extend({
       this.historyBack = false;
       animate.reverse = true;
     }
+    app.transition = "slide";
     $.mobile.changePage($(page.el), animate);
     if (page.updateListview) {
       page.updateListview();

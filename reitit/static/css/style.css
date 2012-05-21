@@ -38,6 +38,10 @@ html, body {
     background-image: url('/static/icons/ratikka.gif');
 }
 
+.route-parts div.train {
+    background-image: url('/static/icons/juna.gif');
+}
+
 .route-parts div.metro {
     background-image: url('/static/icons/metro.gif');
 }

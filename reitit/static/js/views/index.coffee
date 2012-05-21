@@ -16,16 +16,22 @@ window.IndexView = Backbone.View.extend
         $("#basicMap").height(h + "px")
         app.map.updateSize()
 
-    updateLocationFields: ->
-        event = currentTarget: value: undefined
-        if window.InputView::from != undefined
-            event.currentTarget.value = window.InputView::from
-            @updateFrom event         
-        else if window.InputView::to != undefined
-            event.currentTarget.value = window.InputView::to
-            @updateTo event
-        window.InputView::from = undefined
-        window.InputView::to = undefined
+    updateLocationFields: (data) ->
+        console.log data
+        return undefined unless data
+        @updateFrom currentTarget: value: data.from if data.from
+        @updateTo currentTarget: value: data.to if data.to
+        return undefined
+
+#        event = currentTarget: value: undefined
+#        if window.InputView::from != undefined
+#            event.currentTarget.value = window.InputView::from
+#            @updateFrom event         
+#        else if window.InputView::to != undefined
+#            event.currentTarget.value = window.InputView::to
+ #           @updateTo event
+#        window.InputView::from = undefined
+#        window.InputView::to = undefined
 
     events:
         "submit": "submit"
@@ -33,8 +39,10 @@ window.IndexView = Backbone.View.extend
         "change #to": "updateTo"
         "focus #from": "onFocusedFrom"
         "focus #to": "onFocusedTo"
-        "click #fromFocus": "onCenterFrom"
-        "click #toFocus": "onCenterTo"
+        "click #from": "onFocusedFrom"
+        "click #to": "onFocusedTo"
+#        "click #fromFocus": "onCenterFrom"
+#        "click #toFocus": "onCenterTo"
 
     render: ->
         d = new Date()
@@ -92,12 +100,14 @@ window.IndexView = Backbone.View.extend
         app.results(true)
 
     onFocusedFrom: (event) ->
-        window.InputView::from = event.currentTarget.value
-        app.navigate "/input/?target=from", true
+        event.preventDefault()
+#        window.InputView::from = event.currentTarget.value
+        app.navigate "/input/?target=from&value=#{event.currentTarget.value}", true
 
     onFocusedTo: (event) ->
-        window.InputView::to = event.currentTarget.value
-        app.navigate "/input/?target=to", true
+        event.preventDefault()
+#        window.InputView::to = event.currentTarget.value
+        app.navigate "/input/?target=to&value=#{event.currentTarget.value}", true
         
     onCenterFrom: (event) ->
         coords = new OpenLayers.LonLat @currentFromLocation.geometry.x, @currentFromLocation.geometry.y
